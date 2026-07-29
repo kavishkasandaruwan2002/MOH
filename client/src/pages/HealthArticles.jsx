@@ -1,58 +1,61 @@
 import React, { useState } from 'react';
-import { seedArticles } from '../data/mohSeedData.js';
-import { BookOpen, Search, Clock, Tag, User, ChevronRight, X } from 'lucide-react';
+import { seedArticles } from '../data/mohSeedData';
+import { Search, BookOpen, Tag, Clock, User, ArrowRight, ChevronRight, X } from 'lucide-react';
 
 export const HealthArticles = () => {
-  const [search, setSearch] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [activeArticle, setActiveArticle] = useState(null);
 
   const categories = ['All', 'Disease Prevention', 'Maternal Care', 'Public Health Safety'];
 
-  const filtered = seedArticles.filter(a => {
-    const matchCat = selectedCategory === 'All' || a.category === selectedCategory;
-    const matchSearch = !search || a.title.toLowerCase().includes(search.toLowerCase()) || a.summary.toLowerCase().includes(search.toLowerCase());
-    return matchCat && matchSearch;
+  const defaultArticleSvg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'><rect width='600' height='400' fill='%232E7D6B'/><text x='50%' y='45%' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-size='22' font-weight='bold'>MOH Health Advisory</text><text x='50%' y='60%' dominant-baseline='middle' text-anchor='middle' fill='%234DB6AC' font-family='sans-serif' font-size='15'>Ministry of Health Sri Lanka</text></svg>";
+
+  const filtered = seedArticles.filter(art => {
+    const matchesSearch = art.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          art.summary.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCat = selectedCategory === 'All' || art.category === selectedCategory;
+    return matchesSearch && matchesCat;
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10 font-sans">
       
-      {/* Title */}
-      <div className="space-y-2">
-        <span className="px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-bold text-xs uppercase tracking-wider">
-          Health Education & Prevention
+      {/* Header Banner */}
+      <div className="bg-gradient-to-r from-[#2E7D6B] to-[#4DB6AC] rounded-3xl p-8 sm:p-12 text-white shadow-xl space-y-4">
+        <span className="px-3.5 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-extrabold uppercase">
+          Health Promotion & Advisory
         </span>
-        <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Verified MOH Health Articles & Advice
+        <h1 className="text-3xl sm:text-5xl font-black tracking-tight">
+          Community Health Education & Articles
         </h1>
-        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-3xl">
-          Evidence-based medical articles written by MOH doctors and epidemiologists on Dengue care, nutrition, maternal wellness, and first aid.
+        <p className="text-sm sm:text-base text-teal-50 max-w-2xl font-medium">
+          Verified medical advisories, disease prevention guides, and child nutrition facts published by Sri Lanka Medical Officers of Health.
         </p>
       </div>
 
-      {/* Search & Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
-        <div className="relative flex-1">
+      {/* Search & Filter Bar */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+        <div className="relative w-full md:w-96">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
           <input
             type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search health topics, Dengue symptoms, rabies..."
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs border border-slate-200 dark:border-slate-700"
+            placeholder="Search health topics, fever, vaccines..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-100 dark:bg-slate-900 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#2E7D6B]"
           />
         </div>
 
-        <div className="flex gap-2 overflow-x-auto">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           {categories.map(cat => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition whitespace-nowrap ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${
                 selectedCategory === cat
-                  ? 'bg-moh-600 text-white shadow-sm'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  ? 'bg-[#2E7D6B] text-white shadow-md'
+                  : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
               }`}
             >
               {cat}
@@ -61,15 +64,20 @@ export const HealthArticles = () => {
         </div>
       </div>
 
-      {/* Article Cards Grid */}
+      {/* Articles Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {filtered.map(art => (
           <div
             key={art.id}
             className="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-200/80 dark:border-slate-700/80 transition-all flex flex-col justify-between group"
           >
-            <div className="h-48 relative overflow-hidden">
-              <img src={art.image} alt={art.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div className="h-48 relative overflow-hidden bg-slate-100 dark:bg-slate-700">
+              <img 
+                src={art.image} 
+                alt={art.title} 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                onError={(e) => { e.target.onerror = null; e.target.src = defaultArticleSvg; }} 
+              />
               <span className="absolute top-3 left-3 px-2.5 py-1 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold rounded-lg uppercase">
                 {art.category}
               </span>
@@ -82,11 +90,11 @@ export const HealthArticles = () => {
                 <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {art.readTime}</span>
               </div>
 
-              <h3 className="font-extrabold text-slate-900 dark:text-white text-base leading-snug group-hover:text-moh-600 transition">
+              <h3 className="font-extrabold text-slate-900 dark:text-white text-base leading-snug group-hover:text-[#2E7D6B] transition">
                 {art.title}
               </h3>
 
-              <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed">
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
                 {art.summary}
               </p>
             </div>
@@ -94,9 +102,9 @@ export const HealthArticles = () => {
             <div className="p-6 pt-0">
               <button
                 onClick={() => setActiveArticle(art)}
-                className="w-full py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-moh-600 hover:text-white text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition"
+                className="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-[#2E7D6B] hover:text-white text-[#2E7D6B] dark:text-[#4DB6AC] text-xs font-extrabold transition flex items-center justify-center gap-1.5"
               >
-                <span>Read Full Article</span>
+                <span>Read Full Advisory</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -104,32 +112,42 @@ export const HealthArticles = () => {
         ))}
       </div>
 
-      {/* Article Reader Modal */}
+      {/* Article Detail Modal */}
       {activeArticle && (
         <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full p-6 space-y-4 max-h-[85vh] overflow-y-auto border border-slate-200 dark:border-slate-800 shadow-2xl animate-in zoom-in-95">
-            <div className="flex justify-between items-start">
-              <div>
-                <span className="text-xs font-bold text-moh-600 uppercase">{activeArticle.category}</span>
-                <h2 className="text-xl font-extrabold text-slate-900 dark:text-white mt-1">{activeArticle.title}</h2>
-                <div className="text-xs text-slate-500 mt-1">By {activeArticle.author} • {activeArticle.readTime}</div>
-              </div>
-              <button onClick={() => setActiveArticle(null)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
-                <X className="w-6 h-6 text-slate-500" />
-              </button>
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 dark:border-slate-800 relative max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setActiveArticle(null)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <img 
+              src={activeArticle.image} 
+              alt={activeArticle.title} 
+              className="w-full h-56 object-cover rounded-2xl" 
+              onError={(e) => { e.target.onerror = null; e.target.src = defaultArticleSvg; }}
+            />
+
+            <div className="space-y-2">
+              <span className="px-3 py-1 bg-[#2E7D6B]/10 text-[#2E7D6B] font-extrabold text-xs rounded-full uppercase">
+                {activeArticle.category}
+              </span>
+              <h2 className="text-2xl font-black text-slate-900 dark:text-white">{activeArticle.title}</h2>
+              <p className="text-xs text-slate-500 font-semibold">By {activeArticle.author} • {activeArticle.readTime}</p>
             </div>
 
-            <img src={activeArticle.image} alt={activeArticle.title} className="w-full h-56 object-cover rounded-2xl" />
-
-            <div className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed space-y-3">
-              <p className="font-semibold text-slate-900 dark:text-white">{activeArticle.summary}</p>
-              <p>{activeArticle.content}</p>
+            <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-normal bg-slate-50 dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700">
+              {activeArticle.content}
             </div>
 
-            <div className="pt-4 flex justify-end">
-              <button onClick={() => setActiveArticle(null)} className="px-5 py-2 bg-moh-600 text-white rounded-xl text-xs font-bold">
-                Close Article
-              </button>
+            <div className="flex flex-wrap gap-2">
+              {activeArticle.tags?.map(t => (
+                <span key={t} className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-semibold rounded-lg">
+                  #{t}
+                </span>
+              ))}
             </div>
           </div>
         </div>

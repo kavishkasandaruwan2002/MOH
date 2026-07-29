@@ -6,9 +6,9 @@ import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { AccessibilityProvider } from './context/AccessibilityContext';
 
-import { AccessibilityBar } from './components/common/AccessibilityBar';
-import { Navbar } from './components/common/Navbar';
-import { Footer } from './components/common/Footer';
+import { Header } from './components/layout/Header';
+import { Footer } from './components/layout/Footer';
+import { FloatingActionControls } from './components/common/FloatingActionControls';
 import { AIChatbot } from './components/ai/AIChatbot';
 
 import { Home } from './pages/Home';
@@ -52,7 +52,7 @@ class ErrorBoundary extends Component {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6 text-center space-y-4">
-          <div className="w-16 h-16 rounded-2xl bg-rose-600/20 text-rose-400 border border-rose-500/40 flex items-center justify-center font-extrabold text-2xl">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center font-extrabold text-2xl">
             🏥
           </div>
           <h1 className="text-2xl font-extrabold">MOH Sri Lanka System Recovery</h1>
@@ -64,7 +64,7 @@ class ErrorBoundary extends Component {
           </pre>
           <button
             onClick={() => { this.setState({ hasError: false }); window.location.href = '/'; }}
-            className="px-6 py-3 bg-moh-600 hover:bg-moh-500 text-white rounded-xl font-bold text-xs shadow-lg transition"
+            className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-lg transition"
           >
             Reload Home Page
           </button>
@@ -84,8 +84,7 @@ export function App() {
             <AccessibilityProvider>
               <Router>
                 <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-200">
-                  <AccessibilityBar />
-                  <Navbar />
+                  <Header />
 
                   <main className="flex-1">
                     <Routes>
@@ -116,6 +115,7 @@ export function App() {
                   </main>
 
                   <AIChatbot />
+                  <FloatingActionControls />
                   <Footer />
                 </div>
               </Router>
