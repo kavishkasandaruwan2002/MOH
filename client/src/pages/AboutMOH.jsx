@@ -1,10 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Target, Compass, HeartPulse, ShieldCheck, Heart, Users, Award, MapPin, Sparkles } from 'lucide-react';
 import { VisionMissionModal } from '../components/common/VisionMissionModal';
 import { MohAreaProfile } from '../components/profile/MohAreaProfile';
 
 export const AboutMOH = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const elementId = location.hash.replace('#', '');
+      const elem = 
+        document.getElementById(elementId) || 
+        document.getElementById('moh-area-profile') || 
+        document.getElementById('vision');
+        
+      if (elem) {
+        setTimeout(() => {
+          elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 font-sans">
@@ -96,7 +116,7 @@ export const AboutMOH = () => {
                 உயர்தர சமூக சுகாதார சேவையை வழங்குவதில் ஒரு முன்னணி முகமாக இருப்பது
               </p>
               <p className="text-xs text-slate-600 dark:text-slate-300 pt-2 border-t border-slate-100 dark:border-slate-700">
-                <strong>நோக்கம்:</strong> மக்களுக்கு சிறந்த தடுப்பு மற்றும் சுகாதார சேவைகளை வழங்குதல்.
+                <strong>நோக்கம்:</strong> மக்களுக்கு சிறந்த தடுப்பு සහ சுகாதார சேவைகளை வழங்குதல்.
               </p>
             </div>
           </div>
@@ -108,7 +128,9 @@ export const AboutMOH = () => {
       {/* ------------------------------------------------------------- */}
       {/* MOH AREA PROFILE & ORGANIZATIONAL TREE CHART SECTION */}
       {/* ------------------------------------------------------------- */}
-      <MohAreaProfile />
+      <div id="profile">
+        <MohAreaProfile />
+      </div>
 
       {/* Healthcare Pillars */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

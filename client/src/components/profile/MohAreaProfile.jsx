@@ -10,7 +10,7 @@ export const MohAreaProfile = () => {
   const [activeBranch, setActiveBranch] = useState('ALL');
 
   return (
-    <section id="moh-area-profile" className="scroll-mt-24 space-y-10 font-sans">
+    <section id="moh-area-profile" data-section="profile" className="scroll-mt-24 space-y-10 font-sans">
       
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-medium">

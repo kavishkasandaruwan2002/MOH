@@ -107,15 +107,22 @@ export const Header = () => {
       return;
     }
 
-    if (path.startsWith('/#')) {
-      const elementId = path.replace('/#', '');
-      const elem = document.getElementById(elementId);
-      if (elem) {
-        elem.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        navigate(path);
+    if (path.includes('#')) {
+      const [targetPath, hash] = path.split('#');
+      const isCurrentPage = location.pathname === targetPath || (targetPath === '' && path.startsWith('#'));
+      
+      if (isCurrentPage) {
+        const elem = document.getElementById(hash) || document.getElementById('moh-area-profile');
+        if (elem) {
+          elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
       }
+      navigate(path);
+      return;
     }
+
+    navigate(path);
   };
 
   return (
