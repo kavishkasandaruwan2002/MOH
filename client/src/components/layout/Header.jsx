@@ -5,11 +5,12 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAccessibility } from '../../context/AccessibilityContext';
-import {
-  Cross, Calendar, ShieldAlert, Syringe, FileText,
-  Activity, PhoneCall, LayoutDashboard, Sun, Moon,
+import { VisionMissionModal } from '../common/VisionMissionModal';
+import { 
+  Cross, Calendar, ShieldAlert, Syringe, FileText, 
+  Activity, PhoneCall, LayoutDashboard, Sun, Moon, 
   Globe, Menu, X, User, LogOut, HeartPulse, BookOpen, Search, Sparkles,
-  Phone, Mail, Clock, ChevronDown, ChevronRight, Type, Contrast, MapPin, Grid, Image, Info, Award, Users, Target, Shield, Stethoscope
+  Phone, Mail, Clock, ChevronDown, ChevronRight, Type, Contrast, MapPin, Grid, Image, Info, Award, Users, Target, Shield, Stethoscope, LogIn
 } from 'lucide-react';
 
 export const Header = () => {
@@ -25,6 +26,9 @@ export const Header = () => {
   const [servicesMegaOpen, setServicesMegaOpen] = useState(false);
   const [mobileAboutExpanded, setMobileAboutExpanded] = useState(false);
   const [mobileServicesExpanded, setMobileServicesExpanded] = useState(false);
+
+  // Vision & Mission Modal State
+  const [visionModalOpen, setVisionModalOpen] = useState(false);
 
   // Search Bar state (Expandable inline search)
   const [searchExpanded, setSearchExpanded] = useState(false);
@@ -60,7 +64,7 @@ export const Header = () => {
 
   // About Us Submenu Items
   const aboutItems = [
-    { title: 'Vision & Mission', desc: 'Our core health objectives & public mandate', path: '/about#vision', icon: Target },
+    { title: 'Vision & Mission', desc: 'Our core health objectives & public mandate', path: '/about#vision', isModalTrigger: true, icon: Target },
     { title: 'MOH Area Profile', desc: 'Demographics & health statistics of Buttala', path: '/about#profile', icon: MapPin },
     { title: 'Our Team', desc: 'Medical officers, SPHI, and nursing staff', path: '/staff', icon: Users }
   ];
@@ -93,10 +97,16 @@ export const Header = () => {
     navigate(`/clinics?search=${encodeURIComponent(searchQuery)}`);
   };
 
-  const handleLinkClick = (path) => {
+  const handleLinkClick = (path, isModalTrigger = false) => {
     setMobileMenuOpen(false);
     setAboutDropdownOpen(false);
     setServicesMegaOpen(false);
+
+    if (isModalTrigger || path === '/about#vision') {
+      setVisionModalOpen(true);
+      return;
+    }
+
     if (path.startsWith('/#')) {
       const elementId = path.replace('/#', '');
       const elem = document.getElementById(elementId);
@@ -111,15 +121,16 @@ export const Header = () => {
   return (
     <>
       {/* ------------------------------------------------------------- */}
-      {/* 1. TOP SLIM BAR (Government Branding & Contact Strip) */}
+      {/* 1. TOP SLIM BAR (With Official Sri Lanka Emblem Pill Badge) */}
       {/* ------------------------------------------------------------- */}
       <div className="bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-200 text-xs py-2 px-4 border-b border-slate-200/90 dark:border-slate-800 transition-colors duration-300 font-sans">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
-
-          {/* Left: Government of Sri Lanka emblem & text */}
+          
+          {/* Left: Government of Sri Lanka official emblem & text pill */}
           <div className="flex items-center gap-2.5 font-semibold text-[11px] sm:text-xs">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#2E7D6B]/15 text-[#2E7D6B] dark:text-[#4DB6AC] font-bold border border-[#2E7D6B]/30">
-              🇱🇰 Government of Sri Lanka
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2E7D6B]/15 text-[#2E7D6B] dark:text-[#4DB6AC] font-bold border border-[#2E7D6B]/30 shadow-xs">
+              <Shield className="w-3.5 h-3.5 text-[#2E7D6B] dark:text-[#4DB6AC]" />
+              <span>Government of Sri Lanka</span>
             </span>
             <span className="hidden sm:inline text-slate-400">•</span>
             <span className="hidden sm:inline font-medium text-slate-600 dark:text-slate-300">
@@ -129,7 +140,7 @@ export const Header = () => {
 
           {/* Right: Language switch, Contact details & Accessibility */}
           <div className="flex items-center gap-3 sm:gap-5 text-[11px] font-medium">
-
+            
             {/* Sinhala | Tamil | English Language Switch */}
             <div className="flex items-center gap-1 bg-white dark:bg-slate-900 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700 shadow-xs">
               <Globe className="w-3 h-3 text-[#2E7D6B] dark:text-[#4DB6AC]" />
@@ -137,10 +148,11 @@ export const Header = () => {
                 <React.Fragment key={l.code}>
                   <button
                     onClick={() => setLang(l.code)}
-                    className={`px-1.5 py-0.5 rounded transition font-bold ${lang === l.code
-                      ? 'bg-[#2E7D6B] text-white shadow-xs'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-[#2E7D6B]'
-                      }`}
+                    className={`px-1.5 py-0.5 rounded transition font-bold ${
+                      lang === l.code
+                        ? 'bg-[#2E7D6B] text-white shadow-xs'
+                        : 'text-slate-600 dark:text-slate-300 hover:text-[#2E7D6B]'
+                    }`}
                   >
                     {l.name}
                   </button>
@@ -170,20 +182,20 @@ export const Header = () => {
             {/* Accessibility Increase Text Size Button */}
             <div className="flex items-center gap-1 bg-white dark:bg-slate-900 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700" title="Accessibility Font Size Controls">
               <Type className="w-3 h-3 text-[#2E7D6B] dark:text-[#4DB6AC]" />
-              <button
-                onClick={() => setFontSize('normal')}
+              <button 
+                onClick={() => setFontSize('normal')} 
                 className={`px-1 text-[11px] rounded ${fontSize === 'normal' ? 'bg-[#2E7D6B] font-bold text-white' : 'text-slate-500 hover:text-slate-900'}`}
               >
                 A
               </button>
-              <button
-                onClick={() => setFontSize('large')}
+              <button 
+                onClick={() => setFontSize('large')} 
                 className={`px-1 text-[11px] rounded ${fontSize === 'large' ? 'bg-[#2E7D6B] font-bold text-white' : 'text-slate-500 hover:text-slate-900'}`}
               >
                 A+
               </button>
-              <button
-                onClick={() => setFontSize('xlarge')}
+              <button 
+                onClick={() => setFontSize('xlarge')} 
                 className={`px-1 text-[11px] rounded ${fontSize === 'xlarge' ? 'bg-[#2E7D6B] font-bold text-white' : 'text-slate-500 hover:text-slate-900'}`}
               >
                 A++
@@ -205,61 +217,64 @@ export const Header = () => {
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* 2. MAIN NAVBAR (Sticky with glassmorphism & clean emblem logo) */}
+      {/* 2. MAIN NAVBAR (Sticky with Sign In Button & CTAs) */}
       {/* ------------------------------------------------------------- */}
-      <header className={`sticky top-0 z-40 transition-all duration-300 ${isScrolled
-        ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-md border-b border-slate-200/80 dark:border-slate-800'
-        : 'bg-white dark:bg-slate-900 border-b border-slate-200/60 dark:border-slate-800'
-        }`}>
+      <header className={`sticky top-0 z-40 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-md border-b border-slate-200/80 dark:border-slate-800' 
+          : 'bg-white dark:bg-slate-900 border-b border-slate-200/60 dark:border-slate-800'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
 
-            {/* Left: Official Clean Logo & Titles */}
-            <Link to="/" className="flex items-center gap-3 group shrink-0">
+            {/* Left: MOH Office Buttala Logo & Titles */}
+            <Link to="/" className="flex items-center gap-3 group shrink-0 py-1">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 className="h-12 w-12 rounded-xl bg-white dark:bg-slate-800 p-1 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-xs overflow-hidden"
               >
-                <img
-                  src="/moh_logo.png"
-                  alt="MOH Office Buttala Logo"
+                <img 
+                  src="/moh_logo.png" 
+                  alt="MOH Office Buttala Official Logo" 
                   className="max-h-full max-w-full object-contain"
                 />
               </motion.div>
 
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-[#2E7D6B] transition-colors">
-                    MOH OFFICE – BUTTALA
-                  </span>
-                </div>
+              <div className="flex flex-col justify-center space-y-0.5">
+                <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-[#2E7D6B] transition-colors leading-tight">
+                  MOH OFFICE – BUTTALA
+                </span>
                 <p className="text-[11px] text-[#2E7D6B] dark:text-[#4DB6AC] font-bold leading-tight">
-                  සෙනෙහසේ සුව පියස - බුත්තල
+                  Medical Officer of Health – Buttala
+                </p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold leading-none">
+                  Uva Province, Sri Lanka
                 </p>
               </div>
             </Link>
 
-            {/* Center: Desktop Menu Items with Hover Animations & Dropdowns */}
+            {/* Center: Desktop Menu Items */}
             <nav className="hidden xl:flex items-center gap-1">
               {navLinks.map((link) => {
-                const isActive = link.isExact
-                  ? location.pathname === '/'
+                const isActive = link.isExact 
+                  ? location.pathname === '/' 
                   : location.pathname === link.path;
 
                 // About Us Dropdown
                 if (link.hasDropdown === 'about') {
                   return (
-                    <div
-                      key={link.path}
+                    <div 
+                      key={link.path} 
                       className="relative group"
                       onMouseEnter={() => setAboutDropdownOpen(true)}
                       onMouseLeave={() => setAboutDropdownOpen(false)}
                     >
                       <button
-                        className={`relative flex items-center gap-1 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${aboutDropdownOpen || location.pathname.startsWith('/about')
-                          ? 'text-[#2E7D6B] dark:text-[#4DB6AC] bg-[#2E7D6B]/10'
-                          : 'text-slate-700 dark:text-slate-200 hover:text-[#2E7D6B] dark:hover:text-[#4DB6AC] hover:bg-slate-100 dark:hover:bg-slate-800'
-                          }`}
+                        className={`relative flex items-center gap-1 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${
+                          aboutDropdownOpen || location.pathname.startsWith('/about')
+                            ? 'text-[#2E7D6B] dark:text-[#4DB6AC] bg-[#2E7D6B]/10'
+                            : 'text-slate-700 dark:text-slate-200 hover:text-[#2E7D6B] dark:hover:text-[#4DB6AC] hover:bg-slate-100 dark:hover:bg-slate-800'
+                        }`}
                       >
                         <span>{link.label}</span>
                         <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${aboutDropdownOpen ? 'rotate-180 text-[#2E7D6B]' : ''}`} />
@@ -278,11 +293,10 @@ export const Header = () => {
                             {aboutItems.map((item, i) => {
                               const ItemIcon = item.icon;
                               return (
-                                <Link
+                                <button
                                   key={i}
-                                  to={item.path}
-                                  onClick={() => handleLinkClick(item.path)}
-                                  className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 transition group/item"
+                                  onClick={() => handleLinkClick(item.path, item.isModalTrigger)}
+                                  className="w-full text-left flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 transition group/item"
                                 >
                                   <div className="p-2 rounded-lg bg-[#2E7D6B]/10 text-[#2E7D6B] dark:text-[#4DB6AC] group-hover/item:bg-[#2E7D6B] group-hover/item:text-white transition">
                                     <ItemIcon className="w-4 h-4" />
@@ -295,7 +309,7 @@ export const Header = () => {
                                       {item.desc}
                                     </p>
                                   </div>
-                                </Link>
+                                </button>
                               );
                             })}
                           </motion.div>
@@ -305,20 +319,21 @@ export const Header = () => {
                   );
                 }
 
-                // Services Mega Dropdown with Icons
+                // Services Mega Dropdown
                 if (link.hasMega) {
                   return (
-                    <div
-                      key={link.path}
+                    <div 
+                      key={link.path} 
                       className="relative group"
                       onMouseEnter={() => setServicesMegaOpen(true)}
                       onMouseLeave={() => setServicesMegaOpen(false)}
                     >
                       <button
-                        className={`relative flex items-center gap-1 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${servicesMegaOpen
-                          ? 'text-[#2E7D6B] dark:text-[#4DB6AC] bg-[#2E7D6B]/10'
-                          : 'text-slate-700 dark:text-slate-200 hover:text-[#2E7D6B] dark:hover:text-[#4DB6AC] hover:bg-slate-100 dark:hover:bg-slate-800'
-                          }`}
+                        className={`relative flex items-center gap-1 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${
+                          servicesMegaOpen
+                            ? 'text-[#2E7D6B] dark:text-[#4DB6AC] bg-[#2E7D6B]/10'
+                            : 'text-slate-700 dark:text-slate-200 hover:text-[#2E7D6B] dark:hover:text-[#4DB6AC] hover:bg-slate-100 dark:hover:bg-slate-800'
+                        }`}
                       >
                         <span>{link.label}</span>
                         <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${servicesMegaOpen ? 'rotate-180 text-[#2E7D6B]' : ''}`} />
@@ -375,19 +390,20 @@ export const Header = () => {
                   );
                 }
 
-                // Standard Nav Links with Underline Animation
+                // Standard Nav Links
                 return (
                   <Link
                     key={link.path}
                     to={link.path}
                     onClick={() => handleLinkClick(link.path)}
-                    className={`relative px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 group ${isActive
-                      ? 'text-[#2E7D6B] dark:text-[#4DB6AC] font-extrabold'
-                      : 'text-slate-700 dark:text-slate-200 hover:text-[#2E7D6B] dark:hover:text-[#4DB6AC] hover:bg-slate-100 dark:hover:bg-slate-800'
-                      }`}
+                    className={`relative px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 group ${
+                      isActive
+                        ? 'text-[#2E7D6B] dark:text-[#4DB6AC] font-extrabold'
+                        : 'text-slate-700 dark:text-slate-200 hover:text-[#2E7D6B] dark:hover:text-[#4DB6AC] hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }`}
                   >
                     <span>{link.label}</span>
-
+                    
                     {/* Active Underline Effect */}
                     {isActive && (
                       <motion.div
@@ -400,7 +416,7 @@ export const Header = () => {
               })}
             </nav>
 
-            {/* Right Side: Search Icon + Primary CTA Button */}
+            {/* Right Side: Search + Sign In Button + Primary CTA */}
             <div className="flex items-center gap-3">
 
               {/* Search Icon with Inline Expandable Search Bar */}
@@ -425,9 +441,9 @@ export const Header = () => {
                       <button type="submit" className="p-1 text-[#2E7D6B]">
                         <Search className="w-3.5 h-3.5" />
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => setSearchExpanded(false)}
+                      <button 
+                        type="button" 
+                        onClick={() => setSearchExpanded(false)} 
                         className="p-1 text-slate-400 hover:text-slate-600 ml-1"
                       >
                         <X className="w-3.5 h-3.5" />
@@ -446,6 +462,38 @@ export const Header = () => {
                   )}
                 </AnimatePresence>
               </div>
+
+              {/* ------------------------------------------------------------- */}
+              {/* SIGN IN / USER PROFILE BUTTON */}
+              {/* ------------------------------------------------------------- */}
+              {user ? (
+                <div className="flex items-center gap-2">
+                  <Link
+                    to={user.role === 'ADMIN' ? '/admin' : user.role === 'PHI' ? '/phi' : '/dashboard'}
+                    className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#2E7D6B]/15 text-[#2E7D6B] dark:text-[#4DB6AC] border border-[#2E7D6B]/30 font-bold text-xs hover:bg-[#2E7D6B]/25 transition"
+                  >
+                    <User className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">{user.name || 'My Profile'}</span>
+                  </Link>
+                  <button
+                    onClick={logout}
+                    className="p-2 rounded-full text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-slate-800 transition"
+                    title="Sign Out"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+                  <Link
+                    to="/login"
+                    className="px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-extrabold text-xs flex items-center gap-1.5 transition border border-slate-200 dark:border-slate-700 shadow-xs"
+                  >
+                    <LogIn className="w-4 h-4 text-[#2E7D6B] dark:text-[#4DB6AC]" />
+                    <span>Sign In</span>
+                  </Link>
+                </motion.div>
+              )}
 
               {/* Primary CTA Button: Book Appointment */}
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
@@ -472,13 +520,19 @@ export const Header = () => {
         </div>
       </header>
 
+      {/* Interactive Vision & Mission Modal */}
+      <VisionMissionModal
+        isOpen={visionModalOpen}
+        onClose={() => setVisionModalOpen(false)}
+      />
+
       {/* ------------------------------------------------------------- */}
       {/* 3. MOBILE SLIDE-IN MENU FROM RIGHT */}
       {/* ------------------------------------------------------------- */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/60 backdrop-blur-xs">
-
+            
             {/* Click outside overlay to close */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -498,13 +552,14 @@ export const Header = () => {
             >
               {/* Header inside Mobile Drawer */}
               <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-white p-0.5 border border-slate-200 flex items-center justify-center shadow-xs overflow-hidden">
-                    <img src="/moh_logo.png" alt="MOH Buttala Official Logo" className="max-h-full max-w-full object-contain" />
+                    <img src="/moh_logo.png" alt="MOH Office Buttala Official Logo" className="max-h-full max-w-full object-contain" />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">MOH BUTTALA</h3>
-                    <p className="text-[10px] text-[#2E7D6B] font-bold">සෙනෙහසේ සුව පියස</p>
+                    <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">MOH OFFICE – BUTTALA</h3>
+                    <p className="text-[10px] text-[#2E7D6B] font-bold">Medical Officer of Health</p>
+                    <p className="text-[9px] text-slate-500">Uva Province, Sri Lanka</p>
                   </div>
                 </div>
                 <button
@@ -517,7 +572,7 @@ export const Header = () => {
 
               {/* Drawer Links List */}
               <div className="p-5 space-y-3 flex-1">
-
+                
                 {/* Mobile Search Form */}
                 <form onSubmit={handleSearchSubmit} className="mb-4">
                   <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded-xl px-3 py-2 border border-slate-200 dark:border-slate-700">
@@ -531,6 +586,28 @@ export const Header = () => {
                     />
                   </div>
                 </form>
+
+                {/* Mobile Sign In Button */}
+                <div className="mb-3">
+                  {user ? (
+                    <div className="flex items-center justify-between bg-slate-100 dark:bg-slate-800 p-3 rounded-2xl border border-slate-200 dark:border-slate-700">
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-[#2E7D6B]" />
+                        <span className="text-xs font-bold text-slate-900 dark:text-white">{user.name}</span>
+                      </div>
+                      <button onClick={logout} className="text-xs text-rose-600 font-extrabold">Sign Out</button>
+                    </div>
+                  ) : (
+                    <Link
+                      to="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="w-full py-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-extrabold text-xs flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700"
+                    >
+                      <LogIn className="w-4 h-4 text-[#2E7D6B]" />
+                      <span>Sign In / Register</span>
+                    </Link>
+                  )}
+                </div>
 
                 {/* Home Link */}
                 <Link
@@ -554,14 +631,13 @@ export const Header = () => {
                   {mobileAboutExpanded && (
                     <div className="pl-6 space-y-2 pt-1 pb-2">
                       {aboutItems.map((item, i) => (
-                        <Link
+                        <button
                           key={i}
-                          to={item.path}
-                          onClick={() => handleLinkClick(item.path)}
-                          className="block text-xs font-semibold text-slate-600 dark:text-slate-400 py-1.5 hover:text-[#2E7D6B]"
+                          onClick={() => handleLinkClick(item.path, item.isModalTrigger)}
+                          className="w-full text-left block text-xs font-semibold text-slate-600 dark:text-slate-400 py-1.5 hover:text-[#2E7D6B]"
                         >
                           {item.title}
-                        </Link>
+                        </button>
                       ))}
                     </div>
                   )}
