@@ -209,15 +209,6 @@ export const Header = () => {
               </button>
             </div>
 
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-1 rounded-full text-slate-600 dark:text-slate-300 hover:text-[#2E7D6B] transition"
-              title="Toggle Theme"
-            >
-              {darkMode ? <Sun className="w-3.5 h-3.5 text-amber-400" /> : <Moon className="w-3.5 h-3.5" />}
-            </button>
-
           </div>
 
         </div>
@@ -512,6 +503,15 @@ export const Header = () => {
                   <span className="hidden sm:inline">Book Appointment</span>
                 </Link>
               </motion.div>
+
+              {/* Main Navbar Theme Toggle */}
+              <button
+                onClick={toggleTheme}
+                className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700"
+                title="Toggle Theme"
+              >
+                {darkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-[#2E7D6B]" />}
+              </button>
 
               {/* Mobile Hamburger Trigger */}
               <button
