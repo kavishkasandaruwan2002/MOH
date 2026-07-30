@@ -23,7 +23,7 @@ export const FloatingActionControls = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3 pointer-events-none">
+    <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-3 pointer-events-none">
       
       {/* Floating "Book Appointment" CTA Button */}
       <motion.div
@@ -35,10 +35,10 @@ export const FloatingActionControls = () => {
       >
         <Link
           to="/appointments"
-          className="flex items-center gap-2.5 px-5 py-3.5 rounded-full bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 text-white font-extrabold text-xs shadow-xl shadow-teal-600/40 border border-white/30 hover:brightness-110 transition group"
+          className="flex items-center gap-2.5 px-3.5 sm:px-5 py-3 sm:py-3.5 rounded-full bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 text-white font-extrabold text-xs shadow-xl shadow-teal-600/40 border border-white/30 hover:brightness-110 transition group"
         >
           <Calendar className="w-4 h-4 stroke-[2.5] group-hover:rotate-12 transition-transform" />
-          <span>Book Appointment</span>
+          <span className="hidden sm:inline">Book Appointment</span>
           <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse"></span>
         </Link>
       </motion.div>

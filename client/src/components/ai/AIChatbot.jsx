@@ -81,7 +81,7 @@ export const AIChatbot = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-moh-600 to-teal-500 text-white rounded-full shadow-2xl hover:scale-105 transition-all duration-300 ring-4 ring-moh-500/20 group"
+          className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-50 flex items-center gap-2.5 px-3 sm:px-4 py-3 bg-gradient-to-r from-moh-600 to-teal-500 text-white rounded-full shadow-2xl hover:scale-105 transition-all duration-300 ring-4 ring-moh-500/20 group"
         >
           <div className="relative">
             <Bot className="w-6 h-6 stroke-[2.5]" />
@@ -93,7 +93,7 @@ export const AIChatbot = () => {
 
       {/* Floating Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-2rem)] h-[520px] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-300">
+        <div className="fixed inset-x-3 bottom-3 sm:inset-x-auto sm:bottom-6 sm:right-6 z-50 w-auto sm:w-96 sm:max-w-[calc(100vw-2rem)] h-[min(520px,calc(100dvh-1.5rem))] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-300">
           
           {/* Chat Header */}
           <div className="bg-gradient-to-r from-moh-700 via-moh-600 to-teal-600 text-white p-4 flex items-center justify-between shadow-md">

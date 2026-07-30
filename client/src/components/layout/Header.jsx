@@ -131,13 +131,13 @@ export const Header = () => {
       {/* 1. TOP SLIM BAR (With Official Sri Lanka Emblem Pill Badge) */}
       {/* ------------------------------------------------------------- */}
       <div className="bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-200 text-xs py-2 px-4 border-b border-slate-200/90 dark:border-slate-800 transition-colors duration-300 font-sans">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2">
           
           {/* Left: Government of Sri Lanka official emblem & text pill */}
-          <div className="flex items-center gap-2.5 font-semibold text-[11px] sm:text-xs">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2E7D6B]/15 text-[#2E7D6B] dark:text-[#4DB6AC] font-bold border border-[#2E7D6B]/30 shadow-xs">
+          <div className="flex min-w-0 flex-wrap items-center justify-center md:justify-start gap-2.5 font-semibold text-[11px] sm:text-xs">
+            <span className="inline-flex min-w-0 items-center gap-2 px-3 py-1 rounded-full bg-[#2E7D6B]/15 text-[#2E7D6B] dark:text-[#4DB6AC] font-bold border border-[#2E7D6B]/30 shadow-xs">
               <Shield className="w-3.5 h-3.5 text-[#2E7D6B] dark:text-[#4DB6AC]" />
-              <span>Government of Sri Lanka</span>
+              <span className="truncate">Government of Sri Lanka</span>
             </span>
             <span className="hidden sm:inline text-slate-400">•</span>
             <span className="hidden sm:inline font-medium text-slate-600 dark:text-slate-300">
@@ -146,10 +146,10 @@ export const Header = () => {
           </div>
 
           {/* Right: Language switch, Contact details & Accessibility */}
-          <div className="flex items-center gap-3 sm:gap-5 text-[11px] font-medium">
+          <div className="flex min-w-0 flex-wrap items-center justify-center md:justify-end gap-2 sm:gap-5 text-[11px] font-medium">
             
             {/* Sinhala | Tamil | English Language Switch */}
-            <div className="flex items-center gap-1 bg-white dark:bg-slate-900 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700 shadow-xs">
+            <div className="hidden sm:flex items-center gap-1 bg-white dark:bg-slate-900 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700 shadow-xs">
               <Globe className="w-3 h-3 text-[#2E7D6B] dark:text-[#4DB6AC]" />
               {languages.map((l, idx) => (
                 <React.Fragment key={l.code}>
@@ -232,13 +232,13 @@ export const Header = () => {
           : 'bg-white dark:bg-slate-900 border-b border-slate-200/60 dark:border-slate-800'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between gap-2 h-16 sm:h-20">
 
             {/* Left: MOH Office Buttala Logo & Titles */}
-            <Link to="/" className="flex items-center gap-3 group shrink-0 py-1">
+            <Link to="/" className="flex min-w-0 items-center gap-2 sm:gap-3 group py-1">
               <motion.div
                 whileHover={{ scale: 1.05 }}
-                className="h-12 w-12 rounded-xl bg-white dark:bg-slate-800 p-1 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-xs overflow-hidden"
+                className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-white dark:bg-slate-800 p-1 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-xs overflow-hidden shrink-0"
               >
                 <img 
                   src="/moh_logo.png" 
@@ -247,14 +247,14 @@ export const Header = () => {
                 />
               </motion.div>
 
-              <div className="flex flex-col justify-center space-y-0.5">
-                <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-[#2E7D6B] transition-colors leading-tight">
+              <div className="min-w-0 flex flex-col justify-center space-y-0.5">
+                <span className="truncate font-extrabold text-sm sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-[#2E7D6B] transition-colors leading-tight">
                   MOH OFFICE – BUTTALA
                 </span>
-                <p className="text-[11px] text-[#2E7D6B] dark:text-[#4DB6AC] font-bold leading-tight">
+                <p className="truncate text-[10px] sm:text-[11px] text-[#2E7D6B] dark:text-[#4DB6AC] font-bold leading-tight">
                   Medical Officer of Health – Buttala
                 </p>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold leading-none">
+                <p className="hidden sm:block truncate text-[10px] text-slate-500 dark:text-slate-400 font-semibold leading-none">
                   Uva Province, Sri Lanka
                 </p>
               </div>
@@ -424,10 +424,10 @@ export const Header = () => {
             </nav>
 
             {/* Right Side: Search + Sign In Button + Primary CTA */}
-            <div className="flex items-center gap-3">
+            <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
 
               {/* Search Icon with Inline Expandable Search Bar */}
-              <div className="relative flex items-center">
+              <div className="relative hidden md:flex items-center">
                 <AnimatePresence>
                   {searchExpanded ? (
                     <motion.form
@@ -494,7 +494,7 @@ export const Header = () => {
                 <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
                   <Link
                     to="/login"
-                    className="px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-extrabold text-xs flex items-center gap-1.5 transition border border-slate-200 dark:border-slate-700 shadow-xs"
+                    className="hidden sm:flex px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-extrabold text-xs items-center gap-1.5 transition border border-slate-200 dark:border-slate-700 shadow-xs"
                   >
                     <LogIn className="w-4 h-4 text-[#2E7D6B] dark:text-[#4DB6AC]" />
                     <span>Sign In</span>
@@ -506,7 +506,7 @@ export const Header = () => {
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
                 <Link
                   to="/appointments"
-                  className="px-5 py-2.5 rounded-full bg-[#2E7D6B] hover:bg-[#236355] text-white font-extrabold text-xs shadow-md shadow-[#2E7D6B]/25 flex items-center gap-2 transition-colors border border-white/20"
+                  className="px-3 sm:px-5 py-2.5 rounded-full bg-[#2E7D6B] hover:bg-[#236355] text-white font-extrabold text-xs shadow-md shadow-[#2E7D6B]/25 flex items-center gap-2 transition-colors border border-white/20"
                 >
                   <Calendar className="w-4 h-4 stroke-[2.5]" />
                   <span className="hidden sm:inline">Book Appointment</span>

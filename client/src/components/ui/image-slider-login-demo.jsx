@@ -76,9 +76,9 @@ export default function ImageSliderLoginDemo() {
   };
 
   return (
-    <div className="w-full min-h-[750px] flex items-center justify-center bg-background p-4 sm:p-6 lg:p-8">
+    <div className="w-full min-h-[calc(100dvh-8rem)] flex items-center justify-center bg-background p-4 sm:p-6 lg:p-8">
       <motion.div 
-        className="w-full max-w-5xl h-[700px] grid grid-cols-1 lg:grid-cols-2 rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800"
+        className="w-full max-w-5xl min-h-[520px] lg:h-[700px] grid grid-cols-1 lg:grid-cols-2 rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800"
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
@@ -101,7 +101,7 @@ export default function ImageSliderLoginDemo() {
         </div>
 
         {/* Right side: Login Form */}
-        <div className="w-full h-full bg-card text-card-foreground flex flex-col items-center justify-center p-8 md:p-12 overflow-y-auto">
+        <div className="w-full min-h-full bg-card text-card-foreground flex flex-col items-center justify-center p-5 sm:p-8 md:p-12 overflow-y-auto">
           <motion.div 
             className="w-full max-w-sm"
             variants={containerVariants}
