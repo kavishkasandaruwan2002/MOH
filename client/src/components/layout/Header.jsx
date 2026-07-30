@@ -231,11 +231,11 @@ export const Header = () => {
           ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-md border-b border-slate-200/80 dark:border-slate-800' 
           : 'bg-white dark:bg-slate-900 border-b border-slate-200/60 dark:border-slate-800'
       }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-2 h-16 sm:h-20">
 
             {/* Left: MOH Office Buttala Logo & Titles */}
-            <Link to="/" className="flex min-w-0 items-center gap-2 sm:gap-3 group py-1">
+            <Link to="/" className="flex min-w-0 items-center gap-2 xl:gap-2.5 2xl:gap-3 group py-1">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-white dark:bg-slate-800 p-1 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-xs overflow-hidden shrink-0"
@@ -248,10 +248,10 @@ export const Header = () => {
               </motion.div>
 
               <div className="min-w-0 flex flex-col justify-center space-y-0.5">
-                <span className="truncate font-extrabold text-sm sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-[#2E7D6B] transition-colors leading-tight">
+                <span className="truncate font-extrabold text-sm sm:text-base 2xl:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-[#2E7D6B] transition-colors leading-tight">
                   MOH OFFICE – BUTTALA
                 </span>
-                <p className="truncate text-[10px] sm:text-[11px] text-[#2E7D6B] dark:text-[#4DB6AC] font-bold leading-tight">
+                <p className="truncate text-[10px] 2xl:text-[11px] text-[#2E7D6B] dark:text-[#4DB6AC] font-bold leading-tight">
                   Medical Officer of Health – Buttala
                 </p>
                 <p className="hidden sm:block truncate text-[10px] text-slate-500 dark:text-slate-400 font-semibold leading-none">
@@ -261,7 +261,7 @@ export const Header = () => {
             </Link>
 
             {/* Center: Desktop Menu Items */}
-            <nav className="hidden xl:flex items-center gap-1">
+            <nav className="hidden xl:flex items-center gap-0.5 2xl:gap-1 shrink-0">
               {navLinks.map((link) => {
                 const isActive = link.isExact 
                   ? location.pathname === '/' 
@@ -277,7 +277,7 @@ export const Header = () => {
                       onMouseLeave={() => setAboutDropdownOpen(false)}
                     >
                       <button
-                        className={`relative flex items-center gap-1 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${
+                        className={`relative flex items-center gap-1 px-2.5 2xl:px-3.5 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 ${
                           aboutDropdownOpen || location.pathname.startsWith('/about')
                             ? 'text-[#2E7D6B] dark:text-[#4DB6AC] bg-[#2E7D6B]/10'
                             : 'text-slate-700 dark:text-slate-200 hover:text-[#2E7D6B] dark:hover:text-[#4DB6AC] hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -336,7 +336,7 @@ export const Header = () => {
                       onMouseLeave={() => setServicesMegaOpen(false)}
                     >
                       <button
-                        className={`relative flex items-center gap-1 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${
+                        className={`relative flex items-center gap-1 px-2.5 2xl:px-3.5 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 ${
                           servicesMegaOpen
                             ? 'text-[#2E7D6B] dark:text-[#4DB6AC] bg-[#2E7D6B]/10'
                             : 'text-slate-700 dark:text-slate-200 hover:text-[#2E7D6B] dark:hover:text-[#4DB6AC] hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -403,7 +403,7 @@ export const Header = () => {
                     key={link.path}
                     to={link.path}
                     onClick={() => handleLinkClick(link.path)}
-                    className={`relative px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 group ${
+                    className={`relative px-2.5 2xl:px-3.5 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 group ${
                       isActive
                         ? 'text-[#2E7D6B] dark:text-[#4DB6AC] font-extrabold'
                         : 'text-slate-700 dark:text-slate-200 hover:text-[#2E7D6B] dark:hover:text-[#4DB6AC] hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -415,7 +415,7 @@ export const Header = () => {
                     {isActive && (
                       <motion.div
                         layoutId="activeUnderline"
-                        className="absolute bottom-1 left-3.5 right-3.5 h-0.5 bg-[#2E7D6B] dark:bg-[#4DB6AC] rounded-full"
+                        className="absolute bottom-1 left-2.5 right-2.5 2xl:left-3.5 2xl:right-3.5 h-0.5 bg-[#2E7D6B] dark:bg-[#4DB6AC] rounded-full"
                       />
                     )}
                   </Link>
@@ -424,7 +424,7 @@ export const Header = () => {
             </nav>
 
             {/* Right Side: Search + Sign In Button + Primary CTA */}
-            <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
+            <div className="flex shrink-0 items-center gap-1.5 2xl:gap-3">
 
               {/* Search Icon with Inline Expandable Search Bar */}
               <div className="relative hidden md:flex items-center">
@@ -494,7 +494,7 @@ export const Header = () => {
                 <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
                   <Link
                     to="/login"
-                    className="hidden sm:flex px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-extrabold text-xs items-center gap-1.5 transition border border-slate-200 dark:border-slate-700 shadow-xs"
+                    className="hidden sm:flex px-3 2xl:px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-extrabold text-xs items-center gap-1.5 transition border border-slate-200 dark:border-slate-700 shadow-xs whitespace-nowrap"
                   >
                     <LogIn className="w-4 h-4 text-[#2E7D6B] dark:text-[#4DB6AC]" />
                     <span>Sign In</span>
@@ -506,7 +506,7 @@ export const Header = () => {
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
                 <Link
                   to="/appointments"
-                  className="px-3 sm:px-5 py-2.5 rounded-full bg-[#2E7D6B] hover:bg-[#236355] text-white font-extrabold text-xs shadow-md shadow-[#2E7D6B]/25 flex items-center gap-2 transition-colors border border-white/20"
+                  className="px-3 2xl:px-5 py-2.5 rounded-full bg-[#2E7D6B] hover:bg-[#236355] text-white font-extrabold text-xs shadow-md shadow-[#2E7D6B]/25 flex items-center gap-2 transition-colors border border-white/20 whitespace-nowrap"
                 >
                   <Calendar className="w-4 h-4 stroke-[2.5]" />
                   <span className="hidden sm:inline">Book Appointment</span>
