@@ -6,6 +6,6 @@ export const connectDB = async () => {
     console.log(`📡 MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error(`❌ MongoDB Connection Error: ${error.message}`);
-    process.exit(1);
+    console.error(`⚠️ Please check MONGODB_URI environment variable and MongoDB Atlas IP access rules.`);
   }
 };
