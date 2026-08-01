@@ -10,7 +10,8 @@
   "scripts": {
     "dev": "node --watch server.js",
     "start": "node server.js",
-    "build": "echo \"No build required\""
+    "build": "echo Building server...",
+    "vercel-build": "echo Building server..."
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
