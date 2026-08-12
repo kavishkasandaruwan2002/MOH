@@ -34,11 +34,11 @@ export default function ImageSliderRegisterDemo() {
     setLoading(true);
 
     const payload = {
-      name,
-      nic,
-      email,
+      name: name.trim(),
+      nic: nic.trim(),
+      email: email.trim(),
       password: password || 'password123',
-      phone: phone || '+94 77 123 4567',
+      phone: phone.trim() || '+94 77 123 4567',
       division: division || 'Colombo Central',
       role: 'CITIZEN'
     };
@@ -52,34 +52,13 @@ export default function ImageSliderRegisterDemo() {
       const data = await res.json();
 
       if (res.ok && data.user) {
-        login(data.user, data.token || 'demo-jwt-token');
+        login(data.user, data.token);
         navigate('/dashboard/citizen');
       } else {
-        setError(data.message || 'Registration failed. Creating demo session.');
-        const mockUser = {
-          id: 'usr-' + Date.now(),
-          name: name || 'Sunethra Ranasinghe',
-          email: email || 'citizen@example.com',
-          nic: nic || '199056781234',
-          phone: phone || '+94 77 999 8877',
-          division,
-          role: 'CITIZEN'
-        };
-        login(mockUser, 'demo-jwt-token');
-        navigate('/dashboard/citizen');
+        setError(data.message || 'Registration failed. Please check your details and try again.');
       }
     } catch (err) {
-      const mockUser = {
-        id: 'usr-' + Date.now(),
-        name: name || 'Sunethra Ranasinghe',
-        email: email || 'citizen@example.com',
-        nic: nic || '199056781234',
-        phone: phone || '+94 77 999 8877',
-        division,
-        role: 'CITIZEN'
-      };
-      login(mockUser, 'demo-jwt-token');
-      navigate('/dashboard/citizen');
+      setError('Unable to connect to backend server. Please make sure the backend is running and try again.');
     } finally {
       setLoading(false);
     }

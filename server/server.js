@@ -18,7 +18,12 @@ import articleRoutes from './routes/articleRoutes.js';
 import galleryRoutes from './routes/galleryRoutes.js';
 import { setupSwagger } from './config/swaggerConfig.js';
 
-dotenv.config();
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -62,9 +67,20 @@ app.use('/api/news', newsRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/gallery', galleryRoutes);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`====================================================`);
   console.log(`🏥 MOH Sri Lanka Portal & Backend Server running on port ${PORT}`);
   console.log(`🔗 Web Application: http://localhost:${PORT}`);
   console.log(`====================================================`);
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use by another server process!`);
+    console.error(`💡 Note: Your backend server is already running in another terminal window.`);
+    console.error(`💡 If you want to restart it, close the other terminal or run: npx kill-port ${PORT}`);
+    process.exit(1);
+  } else {
+    console.error(`❌ Server Error: ${err.message}`);
+  }
 });

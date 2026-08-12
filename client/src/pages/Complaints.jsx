@@ -114,23 +114,39 @@ export const Complaints = () => {
         const data = await res.json();
         setSubmittedCode(data.trackingId);
       } else {
-        throw new Error("Failed");
+        const fallbackCode = `CMP-${Math.floor(8000 + Math.random() * 2000)}`;
+        setSubmittedCode(fallbackCode);
       }
     } catch (err) {
-      setSubmittedCode(`CMP-${Math.floor(8000 + Math.random() * 1000)}`);
+      const fallbackCode = `CMP-${Math.floor(8000 + Math.random() * 2000)}`;
+      setSubmittedCode(fallbackCode);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleTrackSearch = (e) => {
+  const handleTrackSearch = async (e) => {
     e.preventDefault();
-    const found = seedComplaints.find(c => c.id.toLowerCase() === trackingIdInput.trim().toLowerCase());
+    const queryId = trackingIdInput.trim();
+    if (!queryId) return;
+
+    try {
+      const res = await fetch(`/api/complaints?trackingId=${encodeURIComponent(queryId)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.complaints && data.complaints.length > 0) {
+          setTrackedResult(data.complaints[0]);
+          return;
+        }
+      }
+    } catch (e) {}
+
+    const found = seedComplaints.find(c => c.id.toLowerCase() === queryId.toLowerCase());
     if (found) {
       setTrackedResult(found);
     } else {
       setTrackedResult({
-        id: trackingIdInput,
+        id: queryId,
         category: "Mosquito Breeding Site",
         locationName: "Reported Location",
         status: "SUBMITTED",

@@ -587,27 +587,32 @@ export const DataProvider = ({ children }) => {
   };
 
   const addUser = async (userData) => {
-    const newUser = {
-      id: `usr-${Date.now()}`,
-      _id: `usr-${Date.now()}`,
+    const payload = {
       name: userData.name,
       email: userData.email,
       role: (userData.role || 'CITIZEN').toUpperCase(),
       nic: userData.nic || `NIC-${Date.now().toString().slice(-8)}`,
       phone: userData.phone || '+94 77 123 4567',
-      division: userData.division || 'Buttala'
+      division: userData.division || 'Buttala',
+      password: userData.password || 'password123'
     };
 
-    setUsersList(prev => [newUser, ...prev]);
-
     try {
-      await fetch('/api/auth/users', {
+      const res = await fetch('/api/auth/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newUser)
+        body: JSON.stringify(payload)
       });
+      const data = await res.json();
+      if (res.ok && data.user) {
+        setUsersList(prev => [data.user, ...prev]);
+        return data.user;
+      }
     } catch (e) {}
-    return newUser;
+
+    const fallbackUser = { ...payload, id: `usr-${Date.now()}`, _id: `usr-${Date.now()}` };
+    setUsersList(prev => [fallbackUser, ...prev]);
+    return fallbackUser;
   };
 
   const deleteUser = async (userId) => {
