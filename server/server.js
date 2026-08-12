@@ -63,15 +63,17 @@ app.use('/api/news', newsRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/gallery', galleryRoutes);
 
-// Serve static frontend dist bundle
-const distPath = path.join(__dirname, '../client/dist');
-app.use(express.static(distPath));
+if (process.env.NODE_ENV !== 'production') {
+  // Serve static frontend dist bundle
+  const distPath = path.join(__dirname, '../client/dist');
+  app.use(express.static(distPath));
 
-// Fallback all SPA routes to index.html
-app.get('*', (req, res, next) => {
-  if (req.path.startsWith('/api')) return next();
-  res.sendFile(path.join(distPath, 'index.html'));
-});
+  // Fallback all SPA routes to index.html
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`====================================================`);
