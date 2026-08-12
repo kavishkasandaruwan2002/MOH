@@ -12,6 +12,54 @@ import {
   Filter, Eye, X, ExternalLink, Clock, Mail, CheckCircle2, Bell, Sparkle, Building2, User
 } from 'lucide-react';
 
+// Smooth Decelerating Number Counter Component
+const AnimatedCountNumber = ({ value, decimals = 0, prefix = '', suffix = '' }) => {
+  const [displayValue, setDisplayValue] = useState(0);
+  const containerRef = React.useRef(null);
+  const hasAnimated = React.useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          let startTime = null;
+          const duration = 2000; // 2 seconds
+
+          const step = (timestamp) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            // Smooth easeOutCubic curve
+            const easeOutProgress = 1 - Math.pow(1 - progress, 3);
+            setDisplayValue(easeOutProgress * value);
+
+            if (progress < 1) {
+              requestAnimationFrame(step);
+            }
+          };
+
+          requestAnimationFrame(step);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [value]);
+
+  return (
+    <span ref={containerRef} className="inline-block">
+      {prefix}
+      {displayValue.toLocaleString(undefined, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      })}
+      {suffix}
+    </span>
+  );
+};
+
 export const Home = () => {
   const { t } = useLanguage();
   const [symptomModalOpen, setSymptomModalOpen] = useState(false);
@@ -510,44 +558,81 @@ export const Home = () => {
       {/* ------------------------------------------------------------- */}
       {/* ANIMATED STATISTICS BANNER BELOW HERO */}
       {/* ------------------------------------------------------------- */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/80 dark:border-slate-700/80 grid grid-cols-2 lg:grid-cols-4 gap-6 text-center"
+          initial={{ opacity: 0, y: 30, scale: 0.97 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/90 dark:border-slate-700/90 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center relative overflow-hidden"
         >
-          <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-black text-[#2E7D6B] dark:text-[#4DB6AC]">
-              {countStats.families.toLocaleString()}+
-            </div>
-            <div className="text-xs font-bold text-slate-700 dark:text-slate-200">Families Served</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400">Buttala MOH Division</div>
-          </div>
+          {/* Animated Gradient Accent Bar */}
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#2E7D6B] via-[#4DB6AC] to-emerald-400 animate-pulse" />
 
-          <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-black text-[#4DB6AC]">
-              {countStats.immunization}%
+          {/* Stat 1: Families Served */}
+          <motion.div
+            whileHover={{ y: -6, scale: 1.03 }}
+            transition={{ type: "spring", stiffness: 350, damping: 20 }}
+            className="p-5 rounded-2xl bg-gradient-to-b from-slate-50/80 to-white dark:from-slate-800/80 dark:to-slate-800 border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:border-[#2E7D6B]/40 transition-all duration-300 space-y-2 group"
+          >
+            <div className="w-10 h-10 mx-auto rounded-2xl bg-moh-100 dark:bg-moh-900/60 text-[#2E7D6B] dark:text-[#4DB6AC] flex items-center justify-center group-hover:scale-110 group-hover:bg-[#2E7D6B] group-hover:text-white transition-all duration-300 shadow-sm">
+              <Users className="w-5 h-5" />
             </div>
-            <div className="text-xs font-bold text-slate-700 dark:text-slate-200">Immunization Rate</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400">National Target Exceeded</div>
-          </div>
+            <div className="text-3xl sm:text-4xl font-black text-[#2E7D6B] dark:text-[#4DB6AC] tracking-tight">
+              <AnimatedCountNumber value={52400} suffix="+" />
+            </div>
+            <div className="text-xs font-extrabold text-slate-800 dark:text-slate-100">Families Served</div>
+            <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Buttala MOH Division</div>
+          </motion.div>
 
-          <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-black text-[#2E7D6B] dark:text-[#4DB6AC]">
-              {countStats.phm} Areas
+          {/* Stat 2: Immunization Rate */}
+          <motion.div
+            whileHover={{ y: -6, scale: 1.03 }}
+            transition={{ type: "spring", stiffness: 350, damping: 20 }}
+            className="p-5 rounded-2xl bg-gradient-to-b from-slate-50/80 to-white dark:from-slate-800/80 dark:to-slate-800 border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:border-[#4DB6AC]/40 transition-all duration-300 space-y-2 group"
+          >
+            <div className="w-10 h-10 mx-auto rounded-2xl bg-teal-100 dark:bg-teal-900/60 text-[#4DB6AC] flex items-center justify-center group-hover:scale-110 group-hover:bg-[#4DB6AC] group-hover:text-white transition-all duration-300 shadow-sm">
+              <Shield className="w-5 h-5" />
             </div>
-            <div className="text-xs font-bold text-slate-700 dark:text-slate-200">PHM Divisions</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400">Field Midwife Coverage</div>
-          </div>
+            <div className="text-3xl sm:text-4xl font-black text-[#4DB6AC] tracking-tight">
+              <AnimatedCountNumber value={99.2} decimals={1} suffix="%" />
+            </div>
+            <div className="text-xs font-extrabold text-slate-800 dark:text-slate-100">Immunization Rate</div>
+            <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">National Target Exceeded</div>
+          </motion.div>
 
-          <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-black text-teal-600 dark:text-teal-300">
-              {countStats.mental.toLocaleString()}+
+          {/* Stat 3: PHM Divisions */}
+          <motion.div
+            whileHover={{ y: -6, scale: 1.03 }}
+            transition={{ type: "spring", stiffness: 350, damping: 20 }}
+            className="p-5 rounded-2xl bg-gradient-to-b from-slate-50/80 to-white dark:from-slate-800/80 dark:to-slate-800 border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:border-[#2E7D6B]/40 transition-all duration-300 space-y-2 group"
+          >
+            <div className="w-10 h-10 mx-auto rounded-2xl bg-moh-100 dark:bg-moh-900/60 text-[#2E7D6B] dark:text-[#4DB6AC] flex items-center justify-center group-hover:scale-110 group-hover:bg-[#2E7D6B] group-hover:text-white transition-all duration-300 shadow-sm">
+              <MapPin className="w-5 h-5" />
             </div>
-            <div className="text-xs font-bold text-slate-700 dark:text-slate-200">Annual Clinic Visits</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400">Maternal, NCD & Child Care</div>
-          </div>
+            <div className="text-3xl sm:text-4xl font-black text-[#2E7D6B] dark:text-[#4DB6AC] tracking-tight">
+              <AnimatedCountNumber value={18} suffix=" Areas" />
+            </div>
+            <div className="text-xs font-extrabold text-slate-800 dark:text-slate-100">PHM Divisions</div>
+            <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Field Midwife Coverage</div>
+          </motion.div>
+
+          {/* Stat 4: Annual Clinic Visits */}
+          <motion.div
+            whileHover={{ y: -6, scale: 1.03 }}
+            transition={{ type: "spring", stiffness: 350, damping: 20 }}
+            className="p-5 rounded-2xl bg-gradient-to-b from-slate-50/80 to-white dark:from-slate-800/80 dark:to-slate-800 border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:border-teal-500/40 transition-all duration-300 space-y-2 group"
+          >
+            <div className="w-10 h-10 mx-auto rounded-2xl bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-300 flex items-center justify-center group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-sm">
+              <Activity className="w-5 h-5" />
+            </div>
+            <div className="text-3xl sm:text-4xl font-black text-teal-600 dark:text-teal-300 tracking-tight">
+              <AnimatedCountNumber value={12500} suffix="+" />
+            </div>
+            <div className="text-xs font-extrabold text-slate-800 dark:text-slate-100">Annual Clinic Visits</div>
+            <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Maternal, NCD & Child Care</div>
+          </motion.div>
+
         </motion.div>
       </section>
 
