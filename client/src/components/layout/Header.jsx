@@ -86,7 +86,7 @@ export const Header = () => {
     { path: '/clinics', label: 'Clinic Schedule' },
     { path: '/articles', label: 'Health Education' },
     { path: '/#announcements', label: 'News & Events' },
-    { path: '/#gallery', label: 'Gallery' },
+    { path: '/gallery', label: 'Gallery' },
     { path: '/contact', label: 'Contact Us' }
   ];
 
@@ -686,7 +686,7 @@ export const Header = () => {
                   { path: '/clinics', label: 'Clinic Schedule' },
                   { path: '/articles', label: 'Health Education' },
                   { path: '/#announcements', label: 'News & Events' },
-                  { path: '/#gallery', label: 'Gallery' },
+                  { path: '/gallery', label: 'Gallery' },
                   { path: '/contact', label: 'Contact Us' }
                 ].map((item) => (
                   <Link

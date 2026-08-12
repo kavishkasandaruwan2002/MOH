@@ -220,7 +220,7 @@ export const Home = () => {
     }
   ];
 
-  const { teamMembers: contextTeamMembers, clinicSchedules: contextClinics } = useData();
+  const { teamMembers: contextTeamMembers, clinicSchedules: contextClinics, galleryList: contextGallery } = useData();
 
   // Weekly Clinic Schedule Data
   const defaultClinicSchedule = [
@@ -335,8 +335,8 @@ export const Home = () => {
       }))
     : defaultTeamMembers;
 
-  // Gallery Images
-  const galleryItems = [
+  // Gallery Images from Context or Fallback
+  const defaultGalleryItems = [
     { id: 1, title: 'MOH Office Buttala Main Healthcare Facility', category: 'Facilities', url: '/moh_buttala_building.png' },
     { id: 2, title: 'Infant Immunization Clinic Day', category: 'Clinics', url: 'https://images.unsplash.com/photo-1631815588090-d4bfec5b1cdb?auto=format&fit=crop&w=800&q=80' },
     { id: 3, title: 'PHI Field Dengue Inspection & Fogging', category: 'Dengue Campaigns', url: 'https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?auto=format&fit=crop&w=800&q=80' },
@@ -344,6 +344,10 @@ export const Home = () => {
     { id: 5, title: 'Maternal Nutrition & Cooking Workshop', category: 'Nutrition Workshops', url: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=800&q=80' },
     { id: 6, title: 'Well Woman Health Screening Session', category: 'Clinics', url: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80' }
   ];
+
+  const galleryItems = (contextGallery && contextGallery.length > 0)
+    ? contextGallery
+    : defaultGalleryItems;
 
   const filteredGallery = galleryFilter === 'All'
     ? galleryItems

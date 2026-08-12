@@ -8,7 +8,7 @@ import {
 import { 
   Users, Calendar, ShieldAlert, Activity, Cross, UserCheck, 
   Plus, Edit3, Trash2, Search, X, CheckCircle2, AlertCircle, 
-  Stethoscope, MapPin, FileText, Newspaper, Sparkles, User, Shield, KeyRound, Save
+  Stethoscope, MapPin, FileText, Newspaper, Sparkles, User, Shield, KeyRound, Save, Image, Camera, UploadCloud, FileImage, Upload
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
@@ -18,12 +18,57 @@ export const AdminDashboard = () => {
     clinicSchedules, addClinicSchedule, updateClinicSchedule, deleteClinicSchedule,
     newsList, addNews, updateNews, deleteNews,
     articlesList, addArticle, updateArticle, deleteArticle,
-    usersList, updateUserRole, addUser, deleteUser
+    usersList, updateUserRole, addUser, deleteUser,
+    galleryList, addGalleryItem, updateGalleryItem, deleteGalleryItem
   } = useData();
 
   const [analytics, setAnalytics] = useState(null);
-  const [activeTab, setActiveTab] = useState('users'); // 'users' | 'team' | 'clinics' | 'news' | 'articles'
+  const [activeTab, setActiveTab] = useState('gallery'); // 'gallery' | 'users' | 'team' | 'clinics' | 'news' | 'articles'
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Drag and Drop File Upload State
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = React.useRef(null);
+
+  const handleFileSelect = (file) => {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      showToast("Please select a valid image file (PNG, JPG, WEBP, etc.)");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setFormData(prev => ({
+        ...prev,
+        url: e.target.result,
+        fileName: file.name
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileSelect(e.dataTransfer.files[0]);
+    }
+  };
   
   // Notification Toast
   const [toastMessage, setToastMessage] = useState(null);
@@ -79,7 +124,9 @@ export const AdminDashboard = () => {
 
   const handleOpenAddModal = () => {
     setEditingItem(null);
-    if (activeTab === 'users') {
+    if (activeTab === 'gallery') {
+      setFormData({ title: '', category: 'Facilities', url: 'https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?auto=format&fit=crop&w=800&q=80', desc: '' });
+    } else if (activeTab === 'users') {
       setFormData({ name: '', email: '', password: 'password123', nic: '', phone: '', division: 'Buttala', role: 'DOCTOR' });
     } else if (activeTab === 'team') {
       setFormData({ name: '', role: 'Medical Officer of Health', qualifications: '', experience: '5 years', division: 'Buttala', bio: '' });
@@ -102,7 +149,9 @@ export const AdminDashboard = () => {
   const handleDeleteItem = (id, name) => {
     if (!window.confirm(`Are you sure you want to delete "${name}"? This action will immediately update the database.`)) return;
 
-    if (activeTab === 'users') {
+    if (activeTab === 'gallery') {
+      deleteGalleryItem(id);
+    } else if (activeTab === 'users') {
       deleteUser(id);
     } else if (activeTab === 'team') {
       deleteTeamMember(id);
@@ -129,7 +178,9 @@ export const AdminDashboard = () => {
 
     if (editingItem) {
       // Update
-      if (activeTab === 'users') {
+      if (activeTab === 'gallery') {
+        updateGalleryItem(editingItem.id, formData);
+      } else if (activeTab === 'users') {
         updateUserRole(editingItem.id || editingItem._id, formData.role, formData);
       } else if (activeTab === 'team') {
         updateTeamMember(editingItem.id, formData);
@@ -140,10 +191,12 @@ export const AdminDashboard = () => {
       } else if (activeTab === 'articles') {
         updateArticle(editingItem.id, formData);
       }
-      showToast(`Updated "${formData.name || formData.title || formData.type}" successfully!`);
+      showToast(`Updated "${formData.title || formData.name || formData.type}" successfully! Live on frontend.`);
     } else {
       // Add
-      if (activeTab === 'users') {
+      if (activeTab === 'gallery') {
+        addGalleryItem(formData);
+      } else if (activeTab === 'users') {
         addUser(formData);
       } else if (activeTab === 'team') {
         addTeamMember(formData);
@@ -154,7 +207,7 @@ export const AdminDashboard = () => {
       } else if (activeTab === 'articles') {
         addArticle(formData);
       }
-      showToast(`Added "${formData.name || formData.title || formData.type}" successfully!`);
+      showToast(`Added "${formData.title || formData.name || formData.type}" successfully! Live on frontend.`);
     }
 
     setIsModalOpen(false);
@@ -210,18 +263,22 @@ export const AdminDashboard = () => {
             Ministry of Health Central Administrator
           </span>
           <h1 className="text-2xl font-extrabold text-white mt-1">National Public Health Command Dashboard</h1>
-          <p className="text-xs text-slate-300">Logged in as: {currentUser?.name || 'Central Admin'} • User Role Management Active</p>
+          <p className="text-xs text-slate-300">Logged in as: {currentUser?.name || 'Central Admin'} • Live Photo & Content Control</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span className="text-xs font-bold text-emerald-300">Role Permissions Active</span>
+          <span className="text-xs font-bold text-emerald-300">Live Frontend Sync Active</span>
         </div>
       </div>
 
       {/* Overview Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <div className="text-xs text-slate-500 font-bold">Total System Users</div>
+          <div className="text-xs text-slate-500 font-bold">Gallery Photos</div>
+          <div className="text-xl font-extrabold text-moh-600 mt-1">{galleryList.length}</div>
+        </div>
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <div className="text-xs text-slate-500 font-bold">System Users</div>
           <div className="text-xl font-extrabold text-slate-900 dark:text-white mt-1">{usersList.length}</div>
         </div>
         <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
@@ -231,10 +288,6 @@ export const AdminDashboard = () => {
         <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
           <div className="text-xs text-slate-500 font-bold">Active PHI Complaints</div>
           <div className="text-xl font-extrabold text-amber-500 mt-1">{overviewStats.activePHIComplaints}</div>
-        </div>
-        <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <div className="text-xs text-slate-500 font-bold">Resolved Complaints</div>
-          <div className="text-xl font-extrabold text-emerald-500 mt-1">{overviewStats.resolvedComplaintsThisMonth}</div>
         </div>
         <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
           <div className="text-xs text-slate-500 font-bold">Dengue Hotspots</div>
@@ -253,14 +306,14 @@ export const AdminDashboard = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-700 pb-5">
           <div>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-moh-100 dark:bg-moh-900/60 text-moh-700 dark:text-moh-300 font-extrabold text-xs uppercase tracking-wider mb-1">
-              <Shield className="w-3.5 h-3.5" />
-              Role Assignment & Portal Control
+              <Camera className="w-3.5 h-3.5" />
+              Dynamic Media & Content Management
             </span>
             <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
-              System Admin Role & Item Management Console
+              System Admin Console & Gallery Manager
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Assign user roles (Doctor, System Admin, PHI, Medical Staff, Citizen) or manage portal items dynamically.
+              Add photos to the gallery, manage team members, clinic schedules, announcements, and user access roles.
             </p>
           </div>
 
@@ -270,7 +323,7 @@ export const AdminDashboard = () => {
           >
             <Plus className="w-4 h-4 stroke-[3]" />
             <span>
-              Add New {activeTab === 'users' ? 'User & Assign Role' : activeTab === 'team' ? 'Team Member' : activeTab === 'clinics' ? 'Clinic Schedule' : activeTab === 'news' ? 'Announcement' : 'Article'}
+              Add New {activeTab === 'gallery' ? 'Gallery Photo' : activeTab === 'users' ? 'User & Assign Role' : activeTab === 'team' ? 'Team Member' : activeTab === 'clinics' ? 'Clinic Schedule' : activeTab === 'news' ? 'Announcement' : 'Article'}
             </span>
           </button>
         </div>
@@ -280,13 +333,23 @@ export const AdminDashboard = () => {
           <div className="flex flex-wrap gap-2 p-1.5 bg-slate-100 dark:bg-slate-900 rounded-2xl">
             
             <button
+              onClick={() => { setActiveTab('gallery'); setSearchTerm(''); }}
+              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition flex items-center gap-2 ${
+                activeTab === 'gallery' ? 'bg-moh-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+              }`}
+            >
+              <Image className="w-4 h-4" />
+              <span>Photo Gallery ({galleryList.length})</span>
+            </button>
+
+            <button
               onClick={() => { setActiveTab('users'); setSearchTerm(''); }}
               className={`px-4 py-2 rounded-xl text-xs font-extrabold transition flex items-center gap-2 ${
                 activeTab === 'users' ? 'bg-moh-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
               }`}
             >
               <UserCheck className="w-4 h-4" />
-              <span>User Roles & Access ({usersList.length})</span>
+              <span>User Roles ({usersList.length})</span>
             </button>
 
             <button
@@ -306,7 +369,7 @@ export const AdminDashboard = () => {
               }`}
             >
               <Calendar className="w-4 h-4" />
-              <span>Clinic Schedules ({clinicSchedules.length})</span>
+              <span>Schedules ({clinicSchedules.length})</span>
             </button>
 
             <button
@@ -316,7 +379,7 @@ export const AdminDashboard = () => {
               }`}
             >
               <Newspaper className="w-4 h-4" />
-              <span>News & Events ({newsList.length})</span>
+              <span>News ({newsList.length})</span>
             </button>
 
             <button
@@ -337,22 +400,75 @@ export const AdminDashboard = () => {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search users or items..."
+              placeholder="Search items..."
               className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl text-xs border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
             />
           </div>
         </div>
 
-        {/* Tab 0: USER ROLE ASSIGNMENT TABLE */}
-        {activeTab === 'users' && (
+        {/* Tab 0: PHOTO GALLERY MANAGEMENT TABLE */}
+        {activeTab === 'gallery' && (
           <div className="overflow-x-auto space-y-4">
-            <div className="p-3 bg-blue-50 dark:bg-blue-950/40 rounded-2xl border border-blue-200 dark:border-blue-800 text-xs text-blue-900 dark:text-blue-300 flex items-center justify-between">
+            <div className="p-3 bg-teal-50 dark:bg-teal-950/40 rounded-2xl border border-teal-200 dark:border-teal-800 text-xs text-teal-900 dark:text-teal-300 flex items-center justify-between">
               <div className="flex items-center gap-2 font-semibold">
-                <Shield className="w-4 h-4 text-blue-600 shrink-0" />
-                <span>As System Admin, select a new role for any user below and click <b>Assign Role</b> to update permissions immediately.</span>
+                <Camera className="w-4 h-4 text-teal-600 shrink-0" />
+                <span>Add new photos or edit existing gallery images here. All changes reflect live on the public <b>/gallery</b> page and homepage.</span>
               </div>
             </div>
 
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-100 dark:bg-slate-900 text-slate-500 font-bold uppercase text-[10px]">
+                <tr>
+                  <th className="p-3">Photo Preview</th>
+                  <th className="p-3">Title</th>
+                  <th className="p-3">Category</th>
+                  <th className="p-3">Description</th>
+                  <th className="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-700 font-medium">
+                {galleryList
+                  .filter(g => g.title?.toLowerCase().includes(searchTerm.toLowerCase()) || g.category?.toLowerCase().includes(searchTerm.toLowerCase()))
+                  .map((g) => (
+                    <tr key={g.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                      <td className="p-3">
+                        <div className="w-16 h-12 rounded-xl overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-700 shrink-0">
+                          <img src={g.url} alt={g.title} className="w-full h-full object-cover" />
+                        </div>
+                      </td>
+                      <td className="p-3 font-bold text-slate-900 dark:text-white max-w-xs truncate">{g.title}</td>
+                      <td className="p-3">
+                        <span className="px-2.5 py-1 rounded-full bg-moh-100 text-moh-800 dark:bg-moh-900 dark:text-moh-300 font-extrabold text-[10px] uppercase">
+                          {g.category}
+                        </span>
+                      </td>
+                      <td className="p-3 text-slate-600 dark:text-slate-300 max-w-sm truncate">{g.desc || 'N/A'}</td>
+                      <td className="p-3 text-right space-x-2 whitespace-nowrap">
+                        <button
+                          onClick={() => handleOpenEditModal(g)}
+                          className="px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 font-bold rounded-lg transition inline-flex items-center gap-1"
+                        >
+                          <Edit3 className="w-3.5 h-3.5 text-blue-500" />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteItem(g.id, g.title)}
+                          className="px-3 py-1 bg-rose-50 dark:bg-rose-950/50 text-rose-600 hover:bg-rose-100 font-bold rounded-lg transition inline-flex items-center gap-1 border border-rose-200 dark:border-rose-800"
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                          <span>Delete</span>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Tab 1: USER ROLE ASSIGNMENT TABLE */}
+        {activeTab === 'users' && (
+          <div className="overflow-x-auto space-y-4">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-100 dark:bg-slate-900 text-slate-500 font-bold uppercase text-[10px]">
                 <tr>
@@ -438,7 +554,7 @@ export const AdminDashboard = () => {
           </div>
         )}
 
-        {/* Tab 1: MOH Team Members Table */}
+        {/* Tab 2: MOH Team Members Table */}
         {activeTab === 'team' && (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
@@ -488,7 +604,7 @@ export const AdminDashboard = () => {
           </div>
         )}
 
-        {/* Tab 2: Clinic Schedules Table */}
+        {/* Tab 3: Clinic Schedules Table */}
         {activeTab === 'clinics' && (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
@@ -535,7 +651,7 @@ export const AdminDashboard = () => {
           </div>
         )}
 
-        {/* Tab 3: News & Announcements Table */}
+        {/* Tab 4: News & Announcements Table */}
         {activeTab === 'news' && (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
@@ -580,7 +696,7 @@ export const AdminDashboard = () => {
           </div>
         )}
 
-        {/* Tab 4: Health Articles Table */}
+        {/* Tab 5: Health Articles Table */}
         {activeTab === 'articles' && (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
@@ -644,6 +760,149 @@ export const AdminDashboard = () => {
 
             <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
               
+              {/* Active Tab: GALLERY PHOTO FORM */}
+              {activeTab === 'gallery' && (
+                <>
+                  <div>
+                    <label className="block font-bold mb-1 text-slate-700 dark:text-slate-300">Photo Title *</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.title || ''}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      placeholder="e.g. MOH Buttala Maternity Clinic Day"
+                      className="w-full p-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-moh-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1 text-slate-700 dark:text-slate-300">Category *</label>
+                    <select
+                      value={formData.category || 'Facilities'}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      className="w-full p-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-moh-500 font-bold"
+                    >
+                      <option value="Facilities">Facilities</option>
+                      <option value="Clinics">Clinics</option>
+                      <option value="Dengue Campaigns">Dengue Campaigns</option>
+                      <option value="School Health">School Health</option>
+                      <option value="Nutrition Workshops">Nutrition Workshops</option>
+                    </select>
+                  </div>
+
+                  {/* Drag and Drop & File Picker Upload Zone */}
+                  <div>
+                    <label className="block font-bold mb-1.5 text-slate-700 dark:text-slate-300">
+                      Photo Upload (Drag & Drop or Select File) *
+                    </label>
+
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          handleFileSelect(e.target.files[0]);
+                        }
+                      }}
+                    />
+
+                    <div
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={handleDrop}
+                      onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                      className={`relative border-2 border-dashed rounded-2xl p-5 text-center cursor-pointer transition-all duration-300 ${
+                        isDragging
+                          ? 'border-moh-500 bg-moh-50/80 dark:bg-moh-950/40 scale-[1.01]'
+                          : formData.url
+                          ? 'border-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20 dark:border-emerald-800'
+                          : 'border-slate-300 dark:border-slate-700 hover:border-moh-400 bg-slate-50/50 dark:bg-slate-800/50'
+                      }`}
+                    >
+                      {formData.url ? (
+                        <div className="space-y-3">
+                          <div className="relative w-36 h-24 mx-auto rounded-xl overflow-hidden shadow-md border border-slate-200 dark:border-slate-700 bg-slate-900 group">
+                            <img src={formData.url} alt="Preview" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <span className="text-[10px] font-extrabold text-white bg-moh-600 px-2 py-1 rounded-md">Change Photo</span>
+                            </div>
+                          </div>
+
+                          <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center justify-center gap-1.5">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                            <span className="truncate max-w-xs">Photo Ready {formData.fileName ? `(${formData.fileName})` : ''}</span>
+                          </div>
+
+                          <div className="flex items-center justify-center gap-2">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                fileInputRef.current && fileInputRef.current.click();
+                              }}
+                              className="px-3 py-1 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded-lg text-[11px] font-bold hover:bg-slate-100 transition"
+                            >
+                              Browse Different File
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setFormData(prev => ({ ...prev, url: '', fileName: null }));
+                              }}
+                              className="px-3 py-1 bg-rose-50 text-rose-600 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-lg text-[11px] font-bold hover:bg-rose-100 transition"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-2 py-3">
+                          <div className="w-12 h-12 mx-auto rounded-2xl bg-moh-100 dark:bg-moh-900/60 text-moh-600 dark:text-moh-300 flex items-center justify-center shadow-sm">
+                            <UploadCloud className="w-6 h-6 animate-bounce" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-extrabold text-slate-800 dark:text-slate-100">
+                              Drag & Drop photo here, or <span className="text-moh-600 dark:text-teal-400 underline">Browse Local Computer</span>
+                            </p>
+                            <p className="text-[10px] text-slate-400 mt-0.5">
+                              Supports PNG, JPG, JPEG, WEBP files
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Fallback Direct URL Input */}
+                  <div>
+                    <label className="block font-bold mb-1 text-slate-500 dark:text-slate-400 text-[10px]">
+                      OR Paste Image Web URL:
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.url || ''}
+                      onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                      placeholder="https://images.unsplash.com/... or /moh_buttala_building.png"
+                      className="w-full p-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-moh-500 font-mono text-[11px]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1 text-slate-700 dark:text-slate-300">Description</label>
+                    <textarea
+                      rows="3"
+                      value={formData.desc || ''}
+                      onChange={(e) => setFormData({ ...formData, desc: e.target.value })}
+                      placeholder="Brief caption or activity description..."
+                      className="w-full p-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-moh-500"
+                    ></textarea>
+                  </div>
+                </>
+              )}
+
               {/* Active Tab: USER ROLE ASSIGNMENT FORM */}
               {activeTab === 'users' && (
                 <>
@@ -968,7 +1227,7 @@ export const AdminDashboard = () => {
                   type="submit"
                   className="flex-1 py-2.5 bg-moh-600 hover:bg-moh-700 text-white rounded-xl font-bold transition shadow-md"
                 >
-                  {editingItem ? 'Update & Save Role' : 'Add User / Item'}
+                  {editingItem ? 'Update Photo / Item' : 'Publish Photo / Item'}
                 </button>
               </div>
             </form>

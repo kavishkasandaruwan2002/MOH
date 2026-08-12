@@ -29,6 +29,7 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { Terms } from './pages/Terms';
+import { Gallery } from './pages/Gallery';
 
 import { CitizenDashboard } from './pages/dashboards/CitizenDashboard';
 import { StaffDashboard } from './pages/dashboards/StaffDashboard';
@@ -107,6 +108,7 @@ export function App() {
                         <Route path="/register" element={<Register />} />
                         <Route path="/privacy" element={<PrivacyPolicy />} />
                         <Route path="/terms" element={<Terms />} />
+                        <Route path="/gallery" element={<Gallery />} />
 
                         {/* Multi-Role Dashboards */}
                         <Route path="/dashboard/citizen" element={<CitizenDashboard />} />

@@ -17,6 +17,7 @@ import aiRoutes from './routes/aiRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import newsRoutes from './routes/newsRoutes.js';
 import articleRoutes from './routes/articleRoutes.js';
+import galleryRoutes from './routes/galleryRoutes.js';
 
 dotenv.config();
 
@@ -54,6 +55,7 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/articles', articleRoutes);
+app.use('/api/gallery', galleryRoutes);
 
 // Serve static frontend dist bundle
 const distPath = path.join(__dirname, '../client/dist');
