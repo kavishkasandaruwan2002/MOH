@@ -3,23 +3,35 @@ import { useAuth } from '../../context/AuthContext';
 import { seedAppointments, seedComplaints } from '../../data/mohSeedData.js';
 import { 
   User, Calendar, Syringe, ShieldAlert, Bell, FileText, 
-  CheckCircle2, Clock, Download, ArrowRight 
+  CheckCircle2, Clock, Download, ArrowRight, Camera, Edit3 
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
+import { ProfileSettingsModal } from '../../components/profile/ProfileSettingsModal';
 
 export const CitizenDashboard = () => {
   const { user } = useAuth();
   const [appointments] = useState(seedAppointments);
   const [complaints] = useState(seedComplaints.filter(c => c.citizenName.includes('Kamal') || c.citizenName.includes('Sunethra')));
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
+      {/* Profile Settings Modal */}
+      <ProfileSettingsModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+      />
+
       {/* Citizen Profile Banner */}
       <div className="bg-gradient-to-r from-moh-800 to-teal-700 text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center font-extrabold text-2xl text-teal-300">
-            {user?.name?.[0] || 'C'}
+          <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 overflow-hidden flex items-center justify-center font-extrabold text-2xl text-teal-300 shrink-0">
+            {user?.avatar ? (
+              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+            ) : (
+              <span>{user?.name?.[0] || 'C'}</span>
+            )}
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -28,9 +40,17 @@ export const CitizenDashboard = () => {
                 Verified Citizen
               </span>
             </div>
-            <p className="text-xs text-teal-100 mt-1">NIC: {user?.nic || '199056781234'} • MOH Division: {user?.division || 'Colombo Central'}</p>
+            <p className="text-xs text-teal-100 mt-1">NIC: {user?.nic || '199056781234'} • MOH Division: {user?.division || 'Buttala'}</p>
           </div>
         </div>
+
+        <button
+          onClick={() => setIsProfileModalOpen(true)}
+          className="px-4 py-2.5 bg-white/15 hover:bg-white/25 text-white backdrop-blur-md rounded-2xl font-bold text-xs border border-white/20 transition flex items-center gap-2"
+        >
+          <Camera className="w-4 h-4 text-teal-300" />
+          <span>Edit Profile & Photo</span>
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

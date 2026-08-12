@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { seedComplaints } from '../../data/mohSeedData.js';
-import { Shield, AlertCircle, CheckCircle2, MapPin, FileText, Check, Clock } from 'lucide-react';
+import { Shield, AlertCircle, CheckCircle2, MapPin, FileText, Check, Clock, Camera } from 'lucide-react';
+import { ProfileSettingsModal } from '../../components/profile/ProfileSettingsModal';
 
 export const PHIDashboard = () => {
   const { user } = useAuth();
   const [complaints, setComplaints] = useState(seedComplaints);
   const [selectedCmp, setSelectedCmp] = useState(null);
   const [phiNotesInput, setPhiNotesInput] = useState('');
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const updateStatus = (id, newStatus) => {
     setComplaints(complaints.map(c => c.id === id ? {
@@ -22,15 +24,38 @@ export const PHIDashboard = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
+      {/* Profile Settings Modal */}
+      <ProfileSettingsModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+      />
+
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-amber-700 to-orange-800 text-white rounded-3xl p-6 sm:p-8 shadow-xl flex items-center justify-between">
-        <div>
-          <span className="px-2.5 py-0.5 rounded bg-amber-400/20 text-amber-300 font-extrabold text-xs uppercase">
-            Public Health Inspector Field Desk
-          </span>
-          <h1 className="text-2xl font-extrabold text-white mt-1">{user?.name || 'PHI - Nimal Bandara'}</h1>
-          <p className="text-xs text-amber-100">Assigned Division: {user?.division || 'Colombo Central'} • Total Inspections Pending: {complaints.filter(c => c.status !== 'RESOLVED').length}</p>
+      <div className="bg-gradient-to-r from-amber-700 to-orange-800 text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 overflow-hidden flex items-center justify-center font-extrabold text-2xl text-amber-300 shrink-0">
+            {user?.avatar ? (
+              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+            ) : (
+              <span>{user?.name?.[0] || 'P'}</span>
+            )}
+          </div>
+          <div>
+            <span className="px-2.5 py-0.5 rounded bg-amber-400/20 text-amber-300 font-extrabold text-xs uppercase">
+              Public Health Inspector Field Desk
+            </span>
+            <h1 className="text-2xl font-extrabold text-white mt-1">{user?.name || 'PHI - Nimal Bandara'}</h1>
+            <p className="text-xs text-amber-100">Assigned Division: {user?.division || 'Buttala'} • Total Inspections Pending: {complaints.filter(c => c.status !== 'RESOLVED').length}</p>
+          </div>
         </div>
+
+        <button
+          onClick={() => setIsProfileModalOpen(true)}
+          className="px-4 py-2.5 bg-white/15 hover:bg-white/25 text-white backdrop-blur-md rounded-2xl font-bold text-xs border border-white/20 transition flex items-center gap-2"
+        >
+          <Camera className="w-4 h-4 text-amber-300" />
+          <span>Edit Profile & Photo</span>
+        </button>
       </div>
 
       {/* Field Complaints Table */}

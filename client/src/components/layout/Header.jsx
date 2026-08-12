@@ -468,9 +468,13 @@ export const Header = () => {
                 <div className="flex items-center gap-2">
                   <Link
                     to={`/dashboard/${user.role ? user.role.toLowerCase() : 'citizen'}`}
-                    className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#2E7D6B]/15 text-[#2E7D6B] dark:text-[#4DB6AC] border border-[#2E7D6B]/30 font-bold text-xs hover:bg-[#2E7D6B]/25 transition"
+                    className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2E7D6B]/15 text-[#2E7D6B] dark:text-[#4DB6AC] border border-[#2E7D6B]/30 font-bold text-xs hover:bg-[#2E7D6B]/25 transition"
                   >
-                    <User className="w-3.5 h-3.5" />
+                    {user.avatar ? (
+                      <img src={user.avatar} alt={user.name} className="w-5 h-5 rounded-full object-cover border border-[#2E7D6B]" />
+                    ) : (
+                      <User className="w-3.5 h-3.5" />
+                    )}
                     <span className="hidden sm:inline">{user.name || 'My Profile'}</span>
                   </Link>
                   <button

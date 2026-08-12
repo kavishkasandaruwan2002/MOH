@@ -226,3 +226,51 @@ export const deleteUser = async (req, res) => {
     return res.status(500).json({ message: "Error deleting user", error: error.message });
   }
 };
+
+export const updateUserProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, phone, nic, division, avatar, bio, specialty, qualifications } = req.body;
+
+    const user = await User.findOne({
+      $or: [
+        { id },
+        { _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null }
+      ]
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User profile not found" });
+    }
+
+    if (name) user.name = name;
+    if (phone) user.phone = phone;
+    if (nic) user.nic = nic;
+    if (division) user.division = division;
+    if (avatar !== undefined) user.avatar = avatar;
+    if (bio !== undefined) user.bio = bio;
+    if (specialty !== undefined) user.specialty = specialty;
+    if (qualifications !== undefined) user.qualifications = qualifications;
+
+    await user.save();
+
+    return res.json({
+      message: "Profile updated successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        nic: user.nic,
+        phone: user.phone,
+        division: user.division,
+        avatar: user.avatar,
+        bio: user.bio,
+        specialty: user.specialty,
+        qualifications: user.qualifications
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Error updating profile", error: error.message });
+  }
+};

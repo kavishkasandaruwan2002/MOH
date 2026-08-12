@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { seedAppointments } from '../../data/mohSeedData.js';
-import { Stethoscope, CheckCircle2, Clock, Users, Calendar, Scan, Plus, Check, X } from 'lucide-react';
+import { Stethoscope, CheckCircle2, Clock, Users, Calendar, Scan, Plus, Check, X, Camera } from 'lucide-react';
+import { ProfileSettingsModal } from '../../components/profile/ProfileSettingsModal';
 
 export const StaffDashboard = () => {
   const { user } = useAuth();
   const [appointments, setAppointments] = useState(seedAppointments);
   const [scannedResult, setScannedResult] = useState(null);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const handleSimulateScan = () => {
     setScannedResult({
@@ -25,23 +27,48 @@ export const StaffDashboard = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
+      {/* Profile Settings Modal */}
+      <ProfileSettingsModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+      />
+
       {/* Staff Header Banner */}
-      <div className="bg-gradient-to-r from-teal-800 to-moh-800 text-white rounded-3xl p-6 sm:p-8 shadow-xl flex items-center justify-between">
-        <div>
-          <span className="px-2.5 py-0.5 rounded bg-teal-400/20 text-teal-300 font-extrabold text-xs uppercase">
-            MOH Clinical Desk
-          </span>
-          <h1 className="text-2xl font-extrabold text-white mt-1">{user?.name || 'Dr. K. L. Perera'}</h1>
-          <p className="text-xs text-teal-100">Division: {user?.division || 'Colombo Central'} • Total Queue Today: {appointments.length} Patients</p>
+      <div className="bg-gradient-to-r from-teal-800 to-moh-800 text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 overflow-hidden flex items-center justify-center font-extrabold text-2xl text-teal-300 shrink-0">
+            {user?.avatar ? (
+              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+            ) : (
+              <span>{user?.name?.[0] || 'D'}</span>
+            )}
+          </div>
+          <div>
+            <span className="px-2.5 py-0.5 rounded bg-teal-400/20 text-teal-300 font-extrabold text-xs uppercase">
+              MOH Clinical Desk • Doctor / Staff
+            </span>
+            <h1 className="text-2xl font-extrabold text-white mt-1">{user?.name || 'Dr. K. L. Perera'}</h1>
+            <p className="text-xs text-teal-100">Division: {user?.division || 'Buttala'} • Total Queue Today: {appointments.length} Patients</p>
+          </div>
         </div>
 
-        <button
-          onClick={handleSimulateScan}
-          className="px-5 py-3 bg-white text-teal-900 rounded-2xl font-bold text-xs shadow-lg hover:scale-105 transition flex items-center gap-2"
-        >
-          <Scan className="w-4 h-4 text-teal-600" />
-          <span>Simulate QR Ticket Scanner</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsProfileModalOpen(true)}
+            className="px-4 py-2.5 bg-white/15 hover:bg-white/25 text-white backdrop-blur-md rounded-2xl font-bold text-xs border border-white/20 transition flex items-center gap-2"
+          >
+            <Camera className="w-4 h-4 text-teal-300" />
+            <span>Edit Profile & Photo</span>
+          </button>
+
+          <button
+            onClick={handleSimulateScan}
+            className="px-5 py-2.5 bg-white text-teal-900 rounded-2xl font-bold text-xs shadow-lg hover:scale-105 transition flex items-center gap-2"
+          >
+            <Scan className="w-4 h-4" />
+            <span>Simulate QR Scan</span>
+          </button>
+        </div>
       </div>
 
       {scannedResult && (

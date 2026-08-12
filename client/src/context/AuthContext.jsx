@@ -90,8 +90,29 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateProfile = (updatedData) => {
+    setUser(prevUser => {
+      const newUserData = { ...prevUser, ...updatedData };
+      try {
+        localStorage.setItem('moh_user', JSON.stringify(newUserData));
+      } catch (e) {
+        console.warn("Could not save updated profile to localStorage:", e);
+      }
+      return newUserData;
+    });
+
+    if (user && (user.id || user._id)) {
+      const userId = user.id || user._id;
+      fetch(`/api/auth/users/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedData)
+      }).catch(() => {});
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, switchRole }}>
+    <AuthContext.Provider value={{ user, token, login, logout, switchRole, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

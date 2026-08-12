@@ -10,6 +10,7 @@ import {
   Plus, Edit3, Trash2, Search, X, CheckCircle2, AlertCircle, 
   Stethoscope, MapPin, FileText, Newspaper, Sparkles, User, Shield, KeyRound, Save, Image, Camera, UploadCloud, FileImage, Upload
 } from 'lucide-react';
+import { ProfileSettingsModal } from '../../components/profile/ProfileSettingsModal';
 
 export const AdminDashboard = () => {
   const { user: currentUser } = useAuth();
@@ -25,6 +26,7 @@ export const AdminDashboard = () => {
   const [analytics, setAnalytics] = useState(null);
   const [activeTab, setActiveTab] = useState('gallery'); // 'gallery' | 'users' | 'team' | 'clinics' | 'news' | 'articles'
   const [searchTerm, setSearchTerm] = useState('');
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   
   // Drag and Drop File Upload State
   const [isDragging, setIsDragging] = useState(false);
@@ -256,18 +258,44 @@ export const AdminDashboard = () => {
         </div>
       )}
 
+      {/* Profile Settings Modal */}
+      <ProfileSettingsModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+      />
+
       {/* Admin Header */}
       <div className="bg-gradient-to-r from-blue-900 via-slate-900 to-moh-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <span className="px-2.5 py-0.5 rounded bg-blue-400/20 text-blue-300 font-extrabold text-xs uppercase border border-blue-400/30">
-            Ministry of Health Central Administrator
-          </span>
-          <h1 className="text-2xl font-extrabold text-white mt-1">National Public Health Command Dashboard</h1>
-          <p className="text-xs text-slate-300">Logged in as: {currentUser?.name || 'Central Admin'} • Live Photo & Content Control</p>
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 overflow-hidden flex items-center justify-center font-extrabold text-2xl text-blue-300 shrink-0">
+            {currentUser?.avatar ? (
+              <img src={currentUser.avatar} alt={currentUser.name} className="w-full h-full object-cover" />
+            ) : (
+              <span>{currentUser?.name?.[0] || 'A'}</span>
+            )}
+          </div>
+          <div>
+            <span className="px-2.5 py-0.5 rounded bg-blue-400/20 text-blue-300 font-extrabold text-xs uppercase border border-blue-400/30">
+              Ministry of Health Central Administrator
+            </span>
+            <h1 className="text-2xl font-extrabold text-white mt-1">National Public Health Command Dashboard</h1>
+            <p className="text-xs text-slate-300">Logged in as: {currentUser?.name || 'Central Admin'} • Division: {currentUser?.division || 'Buttala'}</p>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span className="text-xs font-bold text-emerald-300">Live Frontend Sync Active</span>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsProfileModalOpen(true)}
+            className="px-4 py-2.5 bg-white/15 hover:bg-white/25 text-white backdrop-blur-md rounded-2xl font-bold text-xs border border-white/20 transition flex items-center gap-2"
+          >
+            <Camera className="w-4 h-4 text-blue-300" />
+            <span>Edit Profile & Photo</span>
+          </button>
+
+          <div className="hidden sm:flex items-center gap-2 px-3 py-2 bg-emerald-950/40 border border-emerald-500/40 rounded-xl">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span className="text-[11px] font-bold text-emerald-300">Sync Active</span>
+          </div>
         </div>
       </div>
 

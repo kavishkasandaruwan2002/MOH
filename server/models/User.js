@@ -7,7 +7,11 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['ADMIN', 'DOCTOR', 'STAFF', 'PHI', 'CITIZEN'], default: 'CITIZEN' },
   nic: { type: String, required: true, unique: true },
   phone: { type: String },
-  division: { type: String, default: 'Colombo Central' }
+  division: { type: String, default: 'Buttala' },
+  avatar: { type: String },
+  bio: { type: String },
+  specialty: { type: String },
+  qualifications: { type: String }
 }, { timestamps: true });
 
 export const User = mongoose.model('User', userSchema);
