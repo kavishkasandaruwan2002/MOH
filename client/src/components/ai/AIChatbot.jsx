@@ -205,7 +205,7 @@ export const AIChatbot = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask MOH Assistant..."
-              className="flex-1 px-3.5 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-moh-500 border-none"
+              className="flex-1 px-3.5 py-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 placeholder:text-slate-500 dark:placeholder:text-slate-400 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-moh-500"
             />
             <button
               type="submit"

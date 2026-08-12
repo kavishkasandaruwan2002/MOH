@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
+import { useData } from '../context/DataContext';
 import { seedArticles } from '../data/mohSeedData';
 import { Search, BookOpen, Tag, Clock, User, ArrowRight, ChevronRight, X } from 'lucide-react';
 
 export const HealthArticles = () => {
+  const { articlesList } = useData();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [activeArticle, setActiveArticle] = useState(null);
 
-  const categories = ['All', 'Disease Prevention', 'Maternal Care', 'Public Health Safety'];
+  const articles = (articlesList && articlesList.length > 0) ? articlesList : seedArticles;
+
+  const categories = ['All', 'Disease Prevention', 'Maternal Care', 'Public Health Safety', 'General Health'];
 
   const defaultArticleSvg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'><rect width='600' height='400' fill='%232E7D6B'/><text x='50%' y='45%' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-size='22' font-weight='bold'>MOH Health Advisory</text><text x='50%' y='60%' dominant-baseline='middle' text-anchor='middle' fill='%234DB6AC' font-family='sans-serif' font-size='15'>Ministry of Health Sri Lanka</text></svg>";
 
-  const filtered = seedArticles.filter(art => {
-    const matchesSearch = art.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          art.summary.toLowerCase().includes(searchTerm.toLowerCase());
+  const filtered = articles.filter(art => {
+    const matchesSearch = art.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          art.summary?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCat = selectedCategory === 'All' || art.category === selectedCategory;
     return matchesSearch && matchesCat;
   });
@@ -43,7 +47,7 @@ export const HealthArticles = () => {
             placeholder="Search health topics, fever, vaccines..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-100 dark:bg-slate-900 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#2E7D6B]"
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#2E7D6B]"
           />
         </div>
 

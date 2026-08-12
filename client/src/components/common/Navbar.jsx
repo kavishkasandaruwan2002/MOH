@@ -271,7 +271,7 @@ export const Navbar = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Type clinic, Dengue symptoms, vaccine schedule..."
-                  className="w-full p-3.5 bg-slate-50 dark:bg-slate-800 rounded-2xl text-xs font-medium border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
+                  className="w-full p-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-medium border border-slate-300 dark:border-slate-700 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-moh-500"
                 />
                 <button
                   type="submit"

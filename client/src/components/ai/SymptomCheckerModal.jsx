@@ -96,7 +96,7 @@ export const SymptomCheckerModal = ({ isOpen, onClose }) => {
                 <select
                   value={district}
                   onChange={(e) => setDistrict(e.target.value)}
-                  className="w-full p-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl font-medium border border-slate-200 dark:border-slate-700"
+                  className="w-full p-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-xl font-medium border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
                 >
                   {districts.map(d => <option key={d} value={d}>{d}</option>)}
                 </select>

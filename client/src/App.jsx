@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { AccessibilityProvider } from './context/AccessibilityContext';
+import { DataProvider } from './context/DataContext';
 
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
@@ -82,43 +83,50 @@ export function App() {
         <ThemeProvider>
           <LanguageProvider>
             <AccessibilityProvider>
-              <Router>
-                <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-200">
-                  <Header />
+              <DataProvider>
+                <Router>
+                  <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-200">
+                    <Header />
 
-                  <main className="flex-1">
-                    <Routes>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/clinics" element={<Clinics />} />
-                      <Route path="/appointments" element={<Appointments />} />
-                      <Route path="/vaccination" element={<Vaccination />} />
-                      <Route path="/complaints" element={<Complaints />} />
-                      <Route path="/surveillance" element={<DiseaseSurveillance />} />
-                      <Route path="/articles" element={<HealthArticles />} />
-                      <Route path="/emergency" element={<Emergency />} />
-                      <Route path="/about" element={<AboutMOH />} />
-                      <Route path="/staff" element={<StaffDirectory />} />
-                      <Route path="/downloads" element={<Downloads />} />
-                      <Route path="/faq" element={<FAQ />} />
-                      <Route path="/contact" element={<Contact />} />
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/register" element={<Register />} />
-                      <Route path="/privacy" element={<PrivacyPolicy />} />
-                      <Route path="/terms" element={<Terms />} />
+                    <main className="flex-1">
+                      <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/clinics" element={<Clinics />} />
+                        <Route path="/appointments" element={<Appointments />} />
+                        <Route path="/vaccination" element={<Vaccination />} />
+                        <Route path="/complaints" element={<Complaints />} />
+                        <Route path="/surveillance" element={<DiseaseSurveillance />} />
+                        <Route path="/articles" element={<HealthArticles />} />
+                        <Route path="/emergency" element={<Emergency />} />
+                        <Route path="/about" element={<AboutMOH />} />
+                        <Route path="/staff" element={<StaffDirectory />} />
+                        <Route path="/downloads" element={<Downloads />} />
+                        <Route path="/faq" element={<FAQ />} />
+                        <Route path="/contact" element={<Contact />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/privacy" element={<PrivacyPolicy />} />
+                        <Route path="/terms" element={<Terms />} />
 
-                      {/* Multi-Role Dashboards */}
-                      <Route path="/dashboard/citizen" element={<CitizenDashboard />} />
-                      <Route path="/dashboard/staff" element={<StaffDashboard />} />
-                      <Route path="/dashboard/phi" element={<PHIDashboard />} />
-                      <Route path="/dashboard/admin" element={<AdminDashboard />} />
-                    </Routes>
-                  </main>
+                        {/* Multi-Role Dashboards */}
+                        <Route path="/dashboard/citizen" element={<CitizenDashboard />} />
+                        <Route path="/dashboard/staff" element={<StaffDashboard />} />
+                        <Route path="/dashboard/phi" element={<PHIDashboard />} />
+                        <Route path="/dashboard/admin" element={<AdminDashboard />} />
 
-                  <AIChatbot />
-                  <FloatingActionControls />
-                  <Footer />
-                </div>
-              </Router>
+                        {/* Alias & Shortcut Routes */}
+                        <Route path="/admin" element={<AdminDashboard />} />
+                        <Route path="/phi" element={<PHIDashboard />} />
+                        <Route path="/dashboard" element={<AdminDashboard />} />
+                      </Routes>
+                    </main>
+
+                    <AIChatbot />
+                    <FloatingActionControls />
+                    <Footer />
+                  </div>
+                </Router>
+              </DataProvider>
             </AccessibilityProvider>
           </LanguageProvider>
         </ThemeProvider>

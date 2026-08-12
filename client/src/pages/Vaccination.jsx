@@ -103,7 +103,7 @@ export const Vaccination = () => {
                 type="text"
                 value={childName}
                 onChange={(e) => setChildName(e.target.value)}
-                className="w-full p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                className="w-full p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
               />
             </div>
 
@@ -113,7 +113,7 @@ export const Vaccination = () => {
                 type="date"
                 value={childDob}
                 onChange={(e) => setChildDob(e.target.value)}
-                className="w-full p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                className="w-full p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
               />
             </div>
 
@@ -123,7 +123,7 @@ export const Vaccination = () => {
                 type="text"
                 value={motherNic}
                 onChange={(e) => setMotherNic(e.target.value)}
-                className="w-full p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                className="w-full p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
               />
             </div>
 
@@ -133,7 +133,7 @@ export const Vaccination = () => {
                 type="text"
                 value={mohDivision}
                 onChange={(e) => setMohDivision(e.target.value)}
-                className="w-full p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                className="w-full p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
               />
             </div>
           </div>

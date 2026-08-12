@@ -197,7 +197,7 @@ export const Complaints = () => {
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                    className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
                   >
                     {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                   </select>
@@ -213,7 +213,7 @@ export const Complaints = () => {
                     value={locationName}
                     onChange={(e) => setLocationName(e.target.value)}
                     placeholder="e.g. Near Baseline Road Bridge"
-                    className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                    className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -239,7 +239,7 @@ export const Complaints = () => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Describe the stagnant water, duration, mosquito larva, or garbage issue..."
-                  className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-medium border border-slate-200 dark:border-slate-700"
+                  className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-medium border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 ></textarea>
               </div>
 
@@ -312,7 +312,7 @@ export const Complaints = () => {
                     type="text"
                     value={citizenName}
                     onChange={(e) => setCitizenName(e.target.value)}
-                    className="w-full p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl text-xs border border-slate-200 dark:border-slate-700"
+                    className="w-full p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl text-xs border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -321,7 +321,7 @@ export const Complaints = () => {
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl text-xs border border-slate-200 dark:border-slate-700"
+                    className="w-full p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl text-xs border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -330,7 +330,7 @@ export const Complaints = () => {
                     type="text"
                     value={nic}
                     onChange={(e) => setNic(e.target.value)}
-                    className="w-full p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl text-xs border border-slate-200 dark:border-slate-700"
+                    className="w-full p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl text-xs border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -385,7 +385,7 @@ export const Complaints = () => {
               value={trackingIdInput}
               onChange={(e) => setTrackingIdInput(e.target.value)}
               placeholder="Enter Tracking Code (e.g. CMP-8841)"
-              className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 uppercase"
+              className="flex-1 px-4 py-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-mono font-bold border border-slate-300 dark:border-slate-700 uppercase focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
             <button
               type="submit"

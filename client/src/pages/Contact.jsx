@@ -57,19 +57,19 @@ export const Contact = () => {
             <form onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }} className="space-y-4 text-xs">
               <div>
                 <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Your Full Name:</label>
-                <input required type="text" placeholder="e.g. Nimal Perera" className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700" />
+                <input required type="text" placeholder="e.g. Nimal Perera" className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-xs font-semibold rounded-2xl border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500" />
               </div>
               <div>
                 <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Email Address:</label>
-                <input required type="email" placeholder="nimal@example.com" className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700" />
+                <input required type="email" placeholder="nimal@example.com" className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-xs font-semibold rounded-2xl border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500" />
               </div>
               <div>
                 <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Message Subject:</label>
-                <input required type="text" placeholder="Clinic schedule inquiry..." className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700" />
+                <input required type="text" placeholder="Clinic schedule inquiry..." className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-xs font-semibold rounded-2xl border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500" />
               </div>
               <div>
                 <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Detailed Message:</label>
-                <textarea required rows="4" placeholder="Write your inquiry..." className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700"></textarea>
+                <textarea required rows="4" placeholder="Write your inquiry..." className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-xs font-semibold rounded-2xl border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"></textarea>
               </div>
 
               <button type="submit" className="w-full py-3.5 bg-moh-600 hover:bg-moh-700 text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-md">

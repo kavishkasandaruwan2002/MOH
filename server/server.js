@@ -15,6 +15,8 @@ import complaintRoutes from './routes/complaintRoutes.js';
 import surveillanceRoutes from './routes/surveillanceRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
+import newsRoutes from './routes/newsRoutes.js';
+import articleRoutes from './routes/articleRoutes.js';
 
 dotenv.config();
 
@@ -50,6 +52,8 @@ app.use('/api/complaints', complaintRoutes);
 app.use('/api/surveillance', surveillanceRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/news', newsRoutes);
+app.use('/api/articles', articleRoutes);
 
 // Serve static frontend dist bundle
 const distPath = path.join(__dirname, '../client/dist');

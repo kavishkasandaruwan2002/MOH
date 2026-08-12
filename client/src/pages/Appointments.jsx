@@ -257,7 +257,7 @@ export const Appointments = () => {
                     <select
                       value={selectedClinic}
                       onChange={(e) => setSelectedClinic(e.target.value)}
-                      className="w-full p-3.5 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                      className="w-full p-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
                     >
                       {seedClinics.map(c => (
                         <option key={c.id} value={c.id}>{c.name} ({c.division})</option>
@@ -272,7 +272,7 @@ export const Appointments = () => {
                     <select
                       value={selectedDoctor}
                       onChange={(e) => setSelectedDoctor(e.target.value)}
-                      className="w-full p-3.5 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                      className="w-full p-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
                     >
                       {seedDoctors.map(d => (
                         <option key={d.id} value={d.id}>{d.name} - {d.specialty}</option>
@@ -287,7 +287,7 @@ export const Appointments = () => {
                     <select
                       value={serviceCategory}
                       onChange={(e) => setServiceCategory(e.target.value)}
-                      className="w-full p-3.5 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                      className="w-full p-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
                     >
                       <option value="General Outpatient Consultation">General Outpatient Consultation</option>
                       <option value="Maternal & Child Care">Maternal & Child Care</option>
@@ -325,7 +325,7 @@ export const Appointments = () => {
                       value={appointmentDate}
                       min="2026-07-29"
                       onChange={(e) => setAppointmentDate(e.target.value)}
-                      className="w-full p-3.5 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                      className="w-full p-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
                     />
                   </div>
 
@@ -386,7 +386,7 @@ export const Appointments = () => {
                       placeholder="e.g. Kamani Perera"
                       value={citizenName}
                       onChange={(e) => setCitizenName(e.target.value)}
-                      className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                      className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
                     />
                   </div>
 
@@ -400,7 +400,7 @@ export const Appointments = () => {
                       placeholder="e.g. 199056781234"
                       value={nic}
                       onChange={(e) => setNic(e.target.value)}
-                      className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                      className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
                     />
                   </div>
 
@@ -412,7 +412,7 @@ export const Appointments = () => {
                       type="date"
                       value={dob}
                       onChange={(e) => setDob(e.target.value)}
-                      className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                      className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
                     />
                   </div>
 
@@ -423,7 +423,7 @@ export const Appointments = () => {
                     <select
                       value={gender}
                       onChange={(e) => setGender(e.target.value)}
-                      className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                      className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
                     >
                       <option value="Female">Female</option>
                       <option value="Male">Male</option>
@@ -441,7 +441,7 @@ export const Appointments = () => {
                       placeholder="+94 77 123 4567"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                      className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
                     />
                   </div>
 
@@ -454,7 +454,7 @@ export const Appointments = () => {
                       placeholder="patient@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                      className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
                     />
                   </div>
                 </div>
@@ -482,7 +482,7 @@ export const Appointments = () => {
                       placeholder="Fever, Routine checkup, Vaccination..."
                       value={reasonForVisit}
                       onChange={(e) => setReasonForVisit(e.target.value)}
-                      className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                      className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
                     />
                   </div>
 
@@ -495,7 +495,7 @@ export const Appointments = () => {
                       placeholder="Allergies, chronic condition details..."
                       value={additionalNotes}
                       onChange={(e) => setAdditionalNotes(e.target.value)}
-                      className="w-full p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                      className="w-full p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
                     />
                   </div>
                 </div>
@@ -601,7 +601,7 @@ export const Appointments = () => {
                 placeholder="REF-2026-XXXX"
                 value={lookupRef}
                 onChange={(e) => setLookupRef(e.target.value)}
-                className="w-full p-3.5 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                className="w-full p-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
               />
             </div>
 
@@ -615,7 +615,7 @@ export const Appointments = () => {
                 placeholder="199056781234"
                 value={lookupNic}
                 onChange={(e) => setLookupNic(e.target.value)}
-                className="w-full p-3.5 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                className="w-full p-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs font-semibold border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
               />
             </div>
 

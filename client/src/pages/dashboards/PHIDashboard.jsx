@@ -93,7 +93,7 @@ export const PHIDashboard = () => {
                 value={phiNotesInput}
                 onChange={(e) => setPhiNotesInput(e.target.value)}
                 placeholder="Served notice under Mosquito Breeding Act..."
-                className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-xs border"
+                className="w-full p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500"
               ></textarea>
             </div>
 

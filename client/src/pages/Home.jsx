@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
+import { useData } from '../context/DataContext';
 import { SymptomCheckerModal } from '../components/ai/SymptomCheckerModal';
 import {
   Cross, Calendar, ShieldAlert, Syringe, Activity,
@@ -171,19 +172,32 @@ export const Home = () => {
     }
   ];
 
+  const { teamMembers: contextTeamMembers, clinicSchedules: contextClinics } = useData();
+
   // Weekly Clinic Schedule Data
-  const clinicSchedule = [
+  const defaultClinicSchedule = [
     { day: 'Monday', time: '8:30 AM - 12:30 PM', type: 'Ante-natal & Maternal Clinic', location: 'MOH Buttala Central Clinic', doctor: 'Dr. K. M. Wickramasinghe', tag: 'Maternal' },
     { day: 'Tuesday', time: '9:00 AM - 1:00 PM', type: 'Infant & Child Immunization', location: 'Pelwatte Sub-center', doctor: 'Dr. S. S. Perera', tag: 'Immunization' },
     { day: 'Wednesday', time: '8:30 AM - 12:00 PM', type: 'Well Woman & Cervical Screening', location: 'MOH Buttala Central Clinic', doctor: 'Dr. K. M. Wickramasinghe', tag: 'Well Woman' },
     { day: 'Thursday', time: '9:00 AM - 1:30 PM', type: 'NCD & Diabetes Screening Clinic', location: 'Kukurampola Community Center', doctor: 'Dr. S. S. Perera', tag: 'NCD' },
     { day: 'Friday', time: '8:30 AM - 12:00 PM', type: 'Dental Clinic & School Health', location: 'MOH Dental Unit', doctor: 'Dr. N. H. Ranasinghe', tag: 'Dental' },
-    { day: 'Saturday', time: '9:00 AM - 12:00 PM', type: 'Special Advisory & Family Planning', location: 'MOH Buttala Central Clinic', doctor: 'Public Health Nursing Sister', tag: 'Maternal' }
+    { day: 'Saturday', time: '9:00 AM - 1:00 PM', type: 'Special Advisory & Family Planning', location: 'MOH Buttala Central Clinic', doctor: 'Public Health Nursing Sister', tag: 'Maternal' }
   ];
+
+  const clinicSchedule = (contextClinics && contextClinics.length > 0)
+    ? contextClinics.map(c => ({
+        day: c.day || 'Monday',
+        time: c.time || c.operatingHours || '8:30 AM - 12:30 PM',
+        type: c.type || c.name || 'General Clinic',
+        location: c.location || c.venue || c.address || 'MOH Buttala Central Clinic',
+        doctor: c.doctor || 'Dr. K. M. Wickramasinghe',
+        tag: c.tag || (c.categories && c.categories[0]) || 'General'
+      }))
+    : defaultClinicSchedule;
 
   const filteredSchedule = selectedClinicFilter === 'All' 
     ? clinicSchedule 
-    : clinicSchedule.filter(item => item.tag === selectedClinicFilter);
+    : clinicSchedule.filter(item => item.tag === selectedClinicFilter || item.type?.toLowerCase().includes(selectedClinicFilter.toLowerCase()));
 
   // Health Education Data
   const healthEducationCards = [
@@ -231,8 +245,8 @@ export const Home = () => {
     }
   ];
 
-  // Team Members with Custom SVG Officer Avatars
-  const teamMembers = [
+  // Team Members from Context or Fallback
+  const defaultTeamMembers = [
     {
       name: 'Dr. K. M. Wickramasinghe',
       role: 'Medical Officer of Health (MOH)',
@@ -262,6 +276,16 @@ export const Home = () => {
       bio: 'Mrs. Rathnayake coordinates Public Health Midwives (PHMs) across Buttala, focusing on prenatal home visits, infant growth tracking, and immunization.'
     }
   ];
+
+  const teamMembers = (contextTeamMembers && contextTeamMembers.length > 0)
+    ? contextTeamMembers.map((m, idx) => ({
+        name: m.name,
+        role: m.role || m.specialty || 'Medical Officer',
+        qualifications: m.qualifications || 'Medical Professional',
+        image: m.image || (idx % 2 === 0 ? doctorMaleSvg : doctorFemaleSvg),
+        bio: m.bio || `${m.name} serves as ${m.role || 'Medical Officer'} at MOH Buttala.`
+      }))
+    : defaultTeamMembers;
 
   // Gallery Images
   const galleryItems = [

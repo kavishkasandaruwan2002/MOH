@@ -238,7 +238,7 @@ export default function ImageSliderRegisterDemo() {
                     id="division"
                     value={division}
                     onChange={(e) => setDivision(e.target.value)}
-                    className="flex h-9 w-full rounded-xl border border-input bg-background px-3 py-1 text-xs font-bold text-slate-800 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-moh-500"
+                    className="flex h-9 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1 text-xs font-bold text-slate-900 dark:text-slate-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-moh-500"
                   >
                     <option value="Colombo Central">Colombo Central</option>
                     <option value="Kandy Municipal">Kandy Municipal</option>

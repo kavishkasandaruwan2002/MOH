@@ -467,7 +467,7 @@ export const Header = () => {
               {user ? (
                 <div className="flex items-center gap-2">
                   <Link
-                    to={user.role === 'ADMIN' ? '/admin' : user.role === 'PHI' ? '/phi' : '/dashboard'}
+                    to={`/dashboard/${user.role ? user.role.toLowerCase() : 'citizen'}`}
                     className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#2E7D6B]/15 text-[#2E7D6B] dark:text-[#4DB6AC] border border-[#2E7D6B]/30 font-bold text-xs hover:bg-[#2E7D6B]/25 transition"
                   >
                     <User className="w-3.5 h-3.5" />
@@ -589,7 +589,7 @@ export const Header = () => {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search clinics & topics..."
-                      className="w-full text-xs bg-transparent border-0 focus:outline-none"
+                      className="w-full text-xs bg-transparent border-0 focus:outline-none text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                     />
                   </div>
                 </form>
@@ -598,11 +598,15 @@ export const Header = () => {
                 <div className="mb-3">
                   {user ? (
                     <div className="flex items-center justify-between bg-slate-100 dark:bg-slate-800 p-3 rounded-2xl border border-slate-200 dark:border-slate-700">
-                      <div className="flex items-center gap-2">
+                      <Link 
+                        to={`/dashboard/${user.role ? user.role.toLowerCase() : 'citizen'}`}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-2 font-bold text-xs text-slate-900 dark:text-white hover:text-[#2E7D6B] transition"
+                      >
                         <User className="w-4 h-4 text-[#2E7D6B]" />
-                        <span className="text-xs font-bold text-slate-900 dark:text-white">{user.name}</span>
-                      </div>
-                      <button onClick={logout} className="text-xs text-rose-600 font-extrabold">Sign Out</button>
+                        <span>{user.name} ({user.role} Dashboard)</span>
+                      </Link>
+                      <button onClick={logout} className="text-xs text-rose-600 font-extrabold ml-2">Sign Out</button>
                     </div>
                   ) : (
                     <Link

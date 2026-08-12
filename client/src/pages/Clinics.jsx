@@ -1,24 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useData } from '../context/DataContext';
 import { seedClinics, seedDoctors } from '../data/mohSeedData.js';
 import { Cross, MapPin, Phone, Mail, Clock, Search, Filter, Calendar, Users, Stethoscope } from 'lucide-react';
 
 export const Clinics = () => {
-  const [clinics, setClinics] = useState(seedClinics);
+  const { clinicSchedules, teamMembers } = useData();
+
+  // Combine seedClinics with dynamic clinicSchedules from Admin Context
+  const allClinics = clinicSchedules && clinicSchedules.length > 0
+    ? clinicSchedules.map(c => ({
+        id: c.id,
+        name: c.name || c.type || 'MOH Primary Care Clinic',
+        division: c.division || 'Buttala',
+        district: c.district || 'Monaragala',
+        address: c.location || c.venue || c.address || 'MOH Buttala Central Clinic',
+        phone: c.phone || '+94 55 227 3222',
+        email: c.email || 'buttala.moh@health.gov.lk',
+        lat: c.lat || 6.7562,
+        lng: c.lng || 81.2464,
+        categories: c.categories || [c.tag || 'Maternal Care'],
+        doctors: [c.doctor || 'Dr. K. M. Wickramasinghe'],
+        operatingHours: c.time || c.operatingHours || 'Mon-Sat: 8:30 AM - 4:00 PM',
+        capacityPerSlot: c.capacityPerSlot || 15
+      }))
+    : seedClinics;
+
   const [divisionFilter, setDivisionFilter] = useState('All');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const divisions = ['All', 'Colombo Central', 'Kandy Municipal', 'Galle Four Gravets', 'Jaffna', 'Gampaha'];
+  const divisions = ['All', 'Buttala', 'Colombo Central', 'Kandy Municipal', 'Galle Four Gravets', 'Jaffna', 'Gampaha'];
   const categories = ['All', 'Vaccination', 'Maternal Care', 'Child Health', 'Communicable Diseases', 'Rabies Vaccine', 'NCD Screening'];
 
-  const filteredClinics = clinics.filter(c => {
+  const filteredClinics = allClinics.filter(c => {
     const matchesDiv = divisionFilter === 'All' || c.division === divisionFilter;
-    const matchesCat = categoryFilter === 'All' || c.categories.includes(categoryFilter);
+    const matchesCat = categoryFilter === 'All' || (c.categories && c.categories.includes(categoryFilter));
     const matchesSearch = !searchQuery || 
       c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      c.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.district.toLowerCase().includes(searchQuery.toLowerCase());
+      (c.address && c.address.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (c.district && c.district.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesDiv && matchesCat && matchesSearch;
   });
 
@@ -50,7 +71,7 @@ export const Clinics = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search clinic name, location, district..."
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
+              className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
             />
           </div>
 
@@ -59,7 +80,7 @@ export const Clinics = () => {
             <select
               value={divisionFilter}
               onChange={(e) => setDivisionFilter(e.target.value)}
-              className="w-full py-2.5 px-3 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500 font-medium"
+              className="w-full py-2.5 px-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500 font-medium"
             >
               {divisions.map(d => (
                 <option key={d} value={d}>Division: {d}</option>
@@ -72,7 +93,7 @@ export const Clinics = () => {
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full py-2.5 px-3 bg-slate-50 dark:bg-slate-900 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500 font-medium"
+              className="w-full py-2.5 px-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl text-xs border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500 font-medium"
             >
               {categories.map(c => (
                 <option key={c} value={c}>Category: {c}</option>

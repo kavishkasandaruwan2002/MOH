@@ -129,7 +129,7 @@ export default function ImageSliderLoginDemo() {
                   id="role"
                   value={selectedRole}
                   onChange={(e) => setSelectedRole(e.target.value)}
-                  className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-xs font-bold text-moh-700 dark:text-teal-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-moh-500"
+                  className="flex h-10 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold text-slate-900 dark:text-teal-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-moh-500"
                 >
                   <option value="CITIZEN">Registered Citizen</option>
                   <option value="STAFF">Medical Staff / Doctor</option>
