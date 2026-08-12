@@ -18,6 +18,7 @@ import analyticsRoutes from './routes/analyticsRoutes.js';
 import newsRoutes from './routes/newsRoutes.js';
 import articleRoutes from './routes/articleRoutes.js';
 import galleryRoutes from './routes/galleryRoutes.js';
+import { setupSwagger } from './config/swaggerConfig.js';
 
 dotenv.config();
 
@@ -34,13 +35,18 @@ connectDB().then(() => {
 });
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ limit: '20mb', extended: true }));
+
+// Setup Interactive Swagger UI Documentation at /api-docs
+setupSwagger(app);
 
 // Health Check
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
     service: 'MOH Sri Lanka Public Health Portal API',
+    swaggerDocs: '/api-docs',
     timestamp: new Date().toISOString()
   });
 });
