@@ -128,3 +128,101 @@ export const getMe = async (req, res) => {
     return res.status(401).json({ message: "Invalid token" });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select('-password').sort({ createdAt: -1 });
+    return res.json({ count: users.length, users });
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching users", error: error.message });
+  }
+};
+
+export const updateUserRole = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role, name, division, phone } = req.body;
+
+    const updateData = {};
+    if (role) updateData.role = role.toUpperCase();
+    if (name) updateData.name = name;
+    if (division) updateData.division = division;
+    if (phone) updateData.phone = phone;
+
+    const updatedUser = await User.findOneAndUpdate(
+      { $or: [{ id }, { _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null }] },
+      { $set: updateData },
+      { new: true }
+    ).select('-password');
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.json({ message: "User role updated successfully", user: updatedUser });
+  } catch (error) {
+    return res.status(500).json({ message: "Error updating user role", error: error.message });
+  }
+};
+
+export const createUser = async (req, res) => {
+  try {
+    const { name, email, password, nic, phone, division, role = 'CITIZEN' } = req.body;
+
+    if (!name || !email) {
+      return res.status(400).json({ message: "Name and email are required" });
+    }
+
+    const generatedNic = nic || `NIC-${Date.now().toString().slice(-8)}`;
+
+    const existing = await User.findOne({ email: email.toLowerCase() });
+    if (existing) {
+      return res.status(400).json({ message: "User with this email already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password || 'password123', 10);
+
+    const newUser = new User({
+      name,
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      role: role.toUpperCase(),
+      nic: generatedNic,
+      phone: phone || '+94 77 123 4567',
+      division: division || 'Buttala'
+    });
+
+    await newUser.save();
+    return res.status(201).json({
+      message: "System user created successfully",
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        nic: newUser.nic,
+        phone: newUser.phone,
+        division: newUser.division
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Error creating user", error: error.message });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await User.findOneAndDelete({
+      $or: [{ id }, { _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null }]
+    });
+
+    if (!deleted) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.json({ message: "User deleted successfully", id });
+  } catch (error) {
+    return res.status(500).json({ message: "Error deleting user", error: error.message });
+  }
+};

@@ -8,20 +8,21 @@ import {
 import { 
   Users, Calendar, ShieldAlert, Activity, Cross, UserCheck, 
   Plus, Edit3, Trash2, Search, X, CheckCircle2, AlertCircle, 
-  Stethoscope, MapPin, FileText, Newspaper, Sparkles
+  Stethoscope, MapPin, FileText, Newspaper, Sparkles, User, Shield, KeyRound, Save
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
-  const { user } = useAuth();
+  const { user: currentUser } = useAuth();
   const { 
     teamMembers, addTeamMember, updateTeamMember, deleteTeamMember,
     clinicSchedules, addClinicSchedule, updateClinicSchedule, deleteClinicSchedule,
     newsList, addNews, updateNews, deleteNews,
-    articlesList, addArticle, updateArticle, deleteArticle
+    articlesList, addArticle, updateArticle, deleteArticle,
+    usersList, updateUserRole, addUser, deleteUser
   } = useData();
 
   const [analytics, setAnalytics] = useState(null);
-  const [activeTab, setActiveTab] = useState('team'); // 'team' | 'clinics' | 'news' | 'articles'
+  const [activeTab, setActiveTab] = useState('users'); // 'users' | 'team' | 'clinics' | 'news' | 'articles'
   const [searchTerm, setSearchTerm] = useState('');
   
   // Notification Toast
@@ -33,6 +34,9 @@ export const AdminDashboard = () => {
 
   // Form Field States
   const [formData, setFormData] = useState({});
+
+  // Local state for role dropdown selections before saving
+  const [roleSelections, setRoleSelections] = useState({});
 
   useEffect(() => {
     fetch('/api/analytics/dashboard')
@@ -75,7 +79,9 @@ export const AdminDashboard = () => {
 
   const handleOpenAddModal = () => {
     setEditingItem(null);
-    if (activeTab === 'team') {
+    if (activeTab === 'users') {
+      setFormData({ name: '', email: '', password: 'password123', nic: '', phone: '', division: 'Buttala', role: 'DOCTOR' });
+    } else if (activeTab === 'team') {
       setFormData({ name: '', role: 'Medical Officer of Health', qualifications: '', experience: '5 years', division: 'Buttala', bio: '' });
     } else if (activeTab === 'clinics') {
       setFormData({ day: 'Monday', time: '8:30 AM - 12:30 PM', type: '', location: 'MOH Buttala Central Clinic', doctor: 'Dr. K. M. Wickramasinghe', tag: 'Maternal' });
@@ -94,9 +100,11 @@ export const AdminDashboard = () => {
   };
 
   const handleDeleteItem = (id, name) => {
-    if (!window.confirm(`Are you sure you want to delete "${name}"? This action will immediately remove it from the frontend.`)) return;
+    if (!window.confirm(`Are you sure you want to delete "${name}"? This action will immediately update the database.`)) return;
 
-    if (activeTab === 'team') {
+    if (activeTab === 'users') {
+      deleteUser(id);
+    } else if (activeTab === 'team') {
       deleteTeamMember(id);
     } else if (activeTab === 'clinics') {
       deleteClinicSchedule(id);
@@ -106,7 +114,14 @@ export const AdminDashboard = () => {
       deleteArticle(id);
     }
 
-    showToast(`"${name}" was deleted successfully. Changes updated on frontend.`);
+    showToast(`"${name}" was deleted successfully.`);
+  };
+
+  const handleSaveRole = (targetUser) => {
+    const userId = targetUser.id || targetUser._id;
+    const newRole = roleSelections[userId] || targetUser.role;
+    updateUserRole(userId, newRole);
+    showToast(`Assigned new role "${newRole}" to ${targetUser.name}! Account permissions updated live.`);
   };
 
   const handleFormSubmit = (e) => {
@@ -114,7 +129,9 @@ export const AdminDashboard = () => {
 
     if (editingItem) {
       // Update
-      if (activeTab === 'team') {
+      if (activeTab === 'users') {
+        updateUserRole(editingItem.id || editingItem._id, formData.role, formData);
+      } else if (activeTab === 'team') {
         updateTeamMember(editingItem.id, formData);
       } else if (activeTab === 'clinics') {
         updateClinicSchedule(editingItem.id, formData);
@@ -123,10 +140,12 @@ export const AdminDashboard = () => {
       } else if (activeTab === 'articles') {
         updateArticle(editingItem.id, formData);
       }
-      showToast(`Updated "${formData.name || formData.title || formData.type}" successfully! Live on frontend.`);
+      showToast(`Updated "${formData.name || formData.title || formData.type}" successfully!`);
     } else {
       // Add
-      if (activeTab === 'team') {
+      if (activeTab === 'users') {
+        addUser(formData);
+      } else if (activeTab === 'team') {
         addTeamMember(formData);
       } else if (activeTab === 'clinics') {
         addClinicSchedule(formData);
@@ -135,7 +154,7 @@ export const AdminDashboard = () => {
       } else if (activeTab === 'articles') {
         addArticle(formData);
       }
-      showToast(`Added "${formData.name || formData.title || formData.type}" successfully! Live on frontend.`);
+      showToast(`Added "${formData.name || formData.title || formData.type}" successfully!`);
     }
 
     setIsModalOpen(false);
@@ -144,6 +163,31 @@ export const AdminDashboard = () => {
   if (!analytics) return <div className="p-10 text-center text-slate-500 font-bold">Loading Admin Central Analytics...</div>;
 
   const { overviewStats, monthlyAppointmentsTrend, dengueByDistrict } = analytics;
+
+  const getRoleBadgeClass = (role) => {
+    switch (role?.toUpperCase()) {
+      case 'ADMIN':
+        return 'bg-purple-100 text-purple-900 border-purple-300 dark:bg-purple-950/80 dark:text-purple-300 dark:border-purple-800';
+      case 'DOCTOR':
+        return 'bg-blue-100 text-blue-900 border-blue-300 dark:bg-blue-950/80 dark:text-blue-300 dark:border-blue-800';
+      case 'STAFF':
+        return 'bg-teal-100 text-teal-900 border-teal-300 dark:bg-teal-950/80 dark:text-teal-300 dark:border-teal-800';
+      case 'PHI':
+        return 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/80 dark:text-amber-300 dark:border-amber-800';
+      default:
+        return 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
+    }
+  };
+
+  const getRoleLabel = (role) => {
+    switch (role?.toUpperCase()) {
+      case 'ADMIN': return '👑 System Admin';
+      case 'DOCTOR': return '🩺 Doctor';
+      case 'STAFF': return '💼 Medical Staff';
+      case 'PHI': return '🛡️ PHI Inspector';
+      default: return '👤 Citizen';
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -166,19 +210,19 @@ export const AdminDashboard = () => {
             Ministry of Health Central Administrator
           </span>
           <h1 className="text-2xl font-extrabold text-white mt-1">National Public Health Command Dashboard</h1>
-          <p className="text-xs text-slate-300">Logged in as: {user?.name || 'Central Admin'} • Live Dynamic Item Management</p>
+          <p className="text-xs text-slate-300">Logged in as: {currentUser?.name || 'Central Admin'} • User Role Management Active</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span className="text-xs font-bold text-emerald-300">Frontend Live Sync Active</span>
+          <span className="text-xs font-bold text-emerald-300">Role Permissions Active</span>
         </div>
       </div>
 
       {/* Overview Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <div className="text-xs text-slate-500 font-bold">Registered Citizens</div>
-          <div className="text-xl font-extrabold text-slate-900 dark:text-white mt-1">{overviewStats.totalCitizensRegistered.toLocaleString()}</div>
+          <div className="text-xs text-slate-500 font-bold">Total System Users</div>
+          <div className="text-xl font-extrabold text-slate-900 dark:text-white mt-1">{usersList.length}</div>
         </div>
         <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
           <div className="text-xs text-slate-500 font-bold">Monthly Appointments</div>
@@ -203,20 +247,20 @@ export const AdminDashboard = () => {
       </div>
 
       {/* ================================================================= */}
-      {/* SYSTEM ADMIN ITEM MANAGEMENT CONSOLE (ADD / EDIT / DELETE)       */}
+      {/* SYSTEM ADMIN CONTROL CENTER (ROLES & CONTENT)                     */}
       {/* ================================================================= */}
       <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200 dark:border-slate-700 space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-700 pb-5">
           <div>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-moh-100 dark:bg-moh-900/60 text-moh-700 dark:text-moh-300 font-extrabold text-xs uppercase tracking-wider mb-1">
-              <Sparkles className="w-3.5 h-3.5" />
-              Dynamic Content Control Center
+              <Shield className="w-3.5 h-3.5" />
+              Role Assignment & Portal Control
             </span>
             <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
-              Manage Portal Items (Add, Edit, Delete)
+              System Admin Role & Item Management Console
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Add or update items here to immediately display updated information to users on the frontend.
+              Assign user roles (Doctor, System Admin, PHI, Medical Staff, Citizen) or manage portal items dynamically.
             </p>
           </div>
 
@@ -226,14 +270,25 @@ export const AdminDashboard = () => {
           >
             <Plus className="w-4 h-4 stroke-[3]" />
             <span>
-              Add New {activeTab === 'team' ? 'Team Member' : activeTab === 'clinics' ? 'Clinic Schedule' : activeTab === 'news' ? 'Announcement' : 'Article'}
+              Add New {activeTab === 'users' ? 'User & Assign Role' : activeTab === 'team' ? 'Team Member' : activeTab === 'clinics' ? 'Clinic Schedule' : activeTab === 'news' ? 'Announcement' : 'Article'}
             </span>
           </button>
         </div>
 
         {/* Tab Selection */}
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex gap-2 p-1.5 bg-slate-100 dark:bg-slate-900 rounded-2xl">
+          <div className="flex flex-wrap gap-2 p-1.5 bg-slate-100 dark:bg-slate-900 rounded-2xl">
+            
+            <button
+              onClick={() => { setActiveTab('users'); setSearchTerm(''); }}
+              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition flex items-center gap-2 ${
+                activeTab === 'users' ? 'bg-moh-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+              }`}
+            >
+              <UserCheck className="w-4 h-4" />
+              <span>User Roles & Access ({usersList.length})</span>
+            </button>
+
             <button
               onClick={() => { setActiveTab('team'); setSearchTerm(''); }}
               className={`px-4 py-2 rounded-xl text-xs font-extrabold transition flex items-center gap-2 ${
@@ -282,11 +337,106 @@ export const AdminDashboard = () => {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search items..."
+              placeholder="Search users or items..."
               className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl text-xs border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-moh-500"
             />
           </div>
         </div>
+
+        {/* Tab 0: USER ROLE ASSIGNMENT TABLE */}
+        {activeTab === 'users' && (
+          <div className="overflow-x-auto space-y-4">
+            <div className="p-3 bg-blue-50 dark:bg-blue-950/40 rounded-2xl border border-blue-200 dark:border-blue-800 text-xs text-blue-900 dark:text-blue-300 flex items-center justify-between">
+              <div className="flex items-center gap-2 font-semibold">
+                <Shield className="w-4 h-4 text-blue-600 shrink-0" />
+                <span>As System Admin, select a new role for any user below and click <b>Assign Role</b> to update permissions immediately.</span>
+              </div>
+            </div>
+
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-100 dark:bg-slate-900 text-slate-500 font-bold uppercase text-[10px]">
+                <tr>
+                  <th className="p-3">User Name & Email</th>
+                  <th className="p-3">NIC / Phone</th>
+                  <th className="p-3">Division</th>
+                  <th className="p-3">Current Assigned Role</th>
+                  <th className="p-3">Assign New Role</th>
+                  <th className="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-700 font-medium">
+                {usersList
+                  .filter(u => u.name?.toLowerCase().includes(searchTerm.toLowerCase()) || u.email?.toLowerCase().includes(searchTerm.toLowerCase()) || u.role?.toLowerCase().includes(searchTerm.toLowerCase()))
+                  .map((u) => {
+                    const userId = u.id || u._id;
+                    const selectedRole = roleSelections[userId] || u.role;
+
+                    return (
+                      <tr key={userId} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                        <td className="p-3 font-bold text-slate-900 dark:text-white">
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-lg bg-moh-100 text-moh-700 font-bold flex items-center justify-center text-xs shrink-0">
+                              {u.name ? u.name.charAt(0) : 'U'}
+                            </div>
+                            <div>
+                              <div>{u.name}</div>
+                              <div className="text-[10px] font-normal text-slate-500 dark:text-slate-400">{u.email}</div>
+                            </div>
+                          </div>
+                        </td>
+
+                        <td className="p-3 text-slate-600 dark:text-slate-300 font-mono">
+                          <div>{u.nic || 'N/A'}</div>
+                          <div className="text-[10px] font-normal text-slate-400">{u.phone || ''}</div>
+                        </td>
+
+                        <td className="p-3">
+                          <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 font-bold">{u.division || 'Buttala'}</span>
+                        </td>
+
+                        <td className="p-3">
+                          <span className={`px-2.5 py-1 rounded-full border text-[11px] font-extrabold ${getRoleBadgeClass(u.role)}`}>
+                            {getRoleLabel(u.role)}
+                          </span>
+                        </td>
+
+                        <td className="p-3">
+                          <select
+                            value={selectedRole}
+                            onChange={(e) => setRoleSelections({ ...roleSelections, [userId]: e.target.value })}
+                            className="p-1.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-moh-500"
+                          >
+                            <option value="ADMIN">👑 System Admin (ADMIN)</option>
+                            <option value="DOCTOR">🩺 Doctor (DOCTOR)</option>
+                            <option value="STAFF">💼 Medical Staff (STAFF)</option>
+                            <option value="PHI">🛡️ PHI Inspector (PHI)</option>
+                            <option value="CITIZEN">👤 Citizen (CITIZEN)</option>
+                          </select>
+                        </td>
+
+                        <td className="p-3 text-right space-x-2 whitespace-nowrap">
+                          <button
+                            onClick={() => handleSaveRole(u)}
+                            className="px-3 py-1 bg-moh-600 hover:bg-moh-700 text-white font-extrabold rounded-lg transition inline-flex items-center gap-1 shadow-sm"
+                          >
+                            <Save className="w-3.5 h-3.5" />
+                            <span>Assign Role</span>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteItem(userId, u.name)}
+                            className="px-3 py-1 bg-rose-50 dark:bg-rose-950/50 text-rose-600 hover:bg-rose-100 font-bold rounded-lg transition inline-flex items-center gap-1 border border-rose-200 dark:border-rose-800"
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                            <span>Delete</span>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* Tab 1: MOH Team Members Table */}
         {activeTab === 'team' && (
@@ -478,7 +628,7 @@ export const AdminDashboard = () => {
       </div>
 
       {/* ================================================================= */}
-      {/* MODAL FORM FOR ADD / EDIT ITEM                                   */}
+      {/* MODAL FORM FOR ADD / EDIT ITEM OR USER                            */}
       {/* ================================================================= */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
@@ -494,6 +644,85 @@ export const AdminDashboard = () => {
 
             <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
               
+              {/* Active Tab: USER ROLE ASSIGNMENT FORM */}
+              {activeTab === 'users' && (
+                <>
+                  <div>
+                    <label className="block font-bold mb-1 text-slate-700 dark:text-slate-300">Full Name *</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name || ''}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="e.g. Dr. A. B. Herath"
+                      className="w-full p-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-moh-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1 text-slate-700 dark:text-slate-300">Email Address *</label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email || ''}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="e.g. doctor.herath@moh.gov.lk"
+                      className="w-full p-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-moh-500"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold mb-1 text-slate-700 dark:text-slate-300">Assigned Role *</label>
+                      <select
+                        value={formData.role || 'DOCTOR'}
+                        onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                        className="w-full p-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-moh-500 font-bold"
+                      >
+                        <option value="ADMIN">👑 System Admin (ADMIN)</option>
+                        <option value="DOCTOR">🩺 Doctor (DOCTOR)</option>
+                        <option value="STAFF">💼 Medical Staff (STAFF)</option>
+                        <option value="PHI">🛡️ PHI Inspector (PHI)</option>
+                        <option value="CITIZEN">👤 Citizen (CITIZEN)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold mb-1 text-slate-700 dark:text-slate-300">National Identity Card (NIC)</label>
+                      <input
+                        type="text"
+                        value={formData.nic || ''}
+                        onChange={(e) => setFormData({ ...formData, nic: e.target.value })}
+                        placeholder="e.g. 198512345678"
+                        className="w-full p-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-moh-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold mb-1 text-slate-700 dark:text-slate-300">Phone Number</label>
+                      <input
+                        type="text"
+                        value={formData.phone || ''}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        placeholder="+94 77 123 4567"
+                        className="w-full p-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-moh-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-bold mb-1 text-slate-700 dark:text-slate-300">MOH Division</label>
+                      <input
+                        type="text"
+                        value={formData.division || 'Buttala'}
+                        onChange={(e) => setFormData({ ...formData, division: e.target.value })}
+                        className="w-full p-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-moh-500"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
               {/* Active Tab: TEAM MEMBER FORM */}
               {activeTab === 'team' && (
                 <>
@@ -739,7 +968,7 @@ export const AdminDashboard = () => {
                   type="submit"
                   className="flex-1 py-2.5 bg-moh-600 hover:bg-moh-700 text-white rounded-xl font-bold transition shadow-md"
                 >
-                  {editingItem ? 'Update & Sync to Frontend' : 'Add Item & Publish to Frontend'}
+                  {editingItem ? 'Update & Save Role' : 'Add User / Item'}
                 </button>
               </div>
             </form>

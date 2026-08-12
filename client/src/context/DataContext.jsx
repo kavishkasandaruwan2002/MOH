@@ -128,6 +128,60 @@ const defaultClinicSchedules = [
   }
 ];
 
+// Default System Users
+const defaultUsersList = [
+  {
+    id: "usr-01",
+    _id: "usr-01",
+    name: "Dr. K. M. Wickramasinghe",
+    email: "admin@moh.gov.lk",
+    role: "ADMIN",
+    nic: "791823456V",
+    phone: "+94 77 123 4567",
+    division: "Buttala"
+  },
+  {
+    id: "usr-02",
+    _id: "usr-02",
+    name: "Dr. S. S. Perera",
+    email: "doctor@moh.gov.lk",
+    role: "DOCTOR",
+    nic: "842918273V",
+    phone: "+94 71 987 6543",
+    division: "Buttala"
+  },
+  {
+    id: "usr-03",
+    _id: "usr-03",
+    name: "Mr. W. A. Jayasuriya",
+    email: "phi@moh.gov.lk",
+    role: "PHI",
+    nic: "810293847V",
+    phone: "+94 70 333 4444",
+    division: "Buttala"
+  },
+  {
+    id: "usr-04",
+    _id: "usr-04",
+    name: "Mrs. H. M. Rathnayake",
+    email: "staff@moh.gov.lk",
+    role: "STAFF",
+    nic: "875647382V",
+    phone: "+94 72 555 6666",
+    division: "Buttala"
+  },
+  {
+    id: "usr-05",
+    _id: "usr-05",
+    name: "Kavishka Sandaruwan",
+    email: "citizen@moh.gov.lk",
+    role: "CITIZEN",
+    nic: "200212345678",
+    phone: "+94 78 888 9999",
+    division: "Buttala"
+  }
+];
+
 const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
@@ -145,6 +199,7 @@ export const DataProvider = ({ children }) => {
   const [clinicSchedules, setClinicSchedules] = useState(() => getInitialState('clinic_schedules', defaultClinicSchedules));
   const [newsList, setNewsList] = useState(() => getInitialState('news_list', seedNews));
   const [articlesList, setArticlesList] = useState(() => getInitialState('articles_list', seedArticles));
+  const [usersList, setUsersList] = useState(() => getInitialState('users_list', defaultUsersList));
 
   // Persist to localStorage whenever state changes
   useEffect(() => {
@@ -162,6 +217,10 @@ export const DataProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('moh_articles_list', JSON.stringify(articlesList));
   }, [articlesList]);
+
+  useEffect(() => {
+    localStorage.setItem('moh_users_list', JSON.stringify(usersList));
+  }, [usersList]);
 
   // Fetch initial data from server APIs when available
   useEffect(() => {
@@ -246,6 +305,31 @@ export const DataProvider = ({ children }) => {
             const map = new Map();
             prev.forEach(item => map.set(item.id, item));
             data.articles.forEach(item => map.set(item.id, item));
+            return Array.from(map.values());
+          });
+        }
+      })
+      .catch(() => {});
+
+    // 5. Fetch Users
+    fetch('/api/auth/users')
+      .then(res => res.json())
+      .then(data => {
+        if (data.users && data.users.length > 0) {
+          const apiUsers = data.users.map(u => ({
+            id: u._id || u.id,
+            _id: u._id || u.id,
+            name: u.name,
+            email: u.email,
+            role: u.role,
+            nic: u.nic,
+            phone: u.phone,
+            division: u.division
+          }));
+          setUsersList(prev => {
+            const map = new Map();
+            prev.forEach(item => map.set(item.id || item._id, item));
+            apiUsers.forEach(item => map.set(item.id || item._id, item));
             return Array.from(map.values());
           });
         }
@@ -448,6 +532,53 @@ export const DataProvider = ({ children }) => {
     } catch (e) {}
   };
 
+  // --- USER ROLE MANAGEMENT CRUD ---
+  const updateUserRole = async (userId, newRole, updatedFields = {}) => {
+    setUsersList(prev => prev.map(u => (u.id === userId || u._id === userId) ? { ...u, role: newRole, ...updatedFields } : u));
+
+    try {
+      await fetch(`/api/auth/users/${userId}/role`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: newRole, ...updatedFields })
+      });
+    } catch (e) {}
+  };
+
+  const addUser = async (userData) => {
+    const newUser = {
+      id: `usr-${Date.now()}`,
+      _id: `usr-${Date.now()}`,
+      name: userData.name,
+      email: userData.email,
+      role: (userData.role || 'CITIZEN').toUpperCase(),
+      nic: userData.nic || `NIC-${Date.now().toString().slice(-8)}`,
+      phone: userData.phone || '+94 77 123 4567',
+      division: userData.division || 'Buttala'
+    };
+
+    setUsersList(prev => [newUser, ...prev]);
+
+    try {
+      await fetch('/api/auth/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUser)
+      });
+    } catch (e) {}
+    return newUser;
+  };
+
+  const deleteUser = async (userId) => {
+    setUsersList(prev => prev.filter(u => u.id !== userId && u._id !== userId));
+
+    try {
+      await fetch(`/api/auth/users/${userId}`, {
+        method: 'DELETE'
+      });
+    } catch (e) {}
+  };
+
   return (
     <DataContext.Provider value={{
       teamMembers,
@@ -465,7 +596,11 @@ export const DataProvider = ({ children }) => {
       articlesList,
       addArticle,
       updateArticle,
-      deleteArticle
+      deleteArticle,
+      usersList,
+      updateUserRole,
+      addUser,
+      deleteUser
     }}>
       {children}
     </DataContext.Provider>
