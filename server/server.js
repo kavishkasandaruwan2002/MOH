@@ -24,9 +24,13 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB Database
-connectDB().then(() => {
-  // Seed Database with initial mock collections if they are empty
-  seedDatabase();
+connectDB().then((connected) => {
+  if (connected) {
+    // Seed Database with initial mock collections if they are empty
+    seedDatabase();
+  } else {
+    console.warn(`⚠️ Skipping database seeding due to MongoDB connection failure.`);
+  }
 });
 
 app.use(cors());

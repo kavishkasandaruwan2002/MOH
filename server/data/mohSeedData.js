@@ -1,5 +1,3 @@
-// MOH Sri Lanka Comprehensive Seed & Reference Dataset
-
 export const seedClinics = [
   {
     id: "cl-001",
@@ -251,6 +249,7 @@ export const seedComplaints = [
 export const seedAppointments = [
   {
     id: "APT-2026-109",
+    referenceNumber: "REF-2026-109",
     citizenName: "Sunethra Ranasinghe",
     nic: "199056781234",
     phone: "+94 77 999 8877",
@@ -268,6 +267,7 @@ export const seedAppointments = [
   },
   {
     id: "APT-2026-110",
+    referenceNumber: "REF-2026-110",
     citizenName: "Mohamed Rizan",
     nic: "198311223344",
     phone: "+94 71 222 3344",
