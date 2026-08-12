@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
+import { generateClinicSchedulePDF } from '../utils/pdfGenerator';
 import { SymptomCheckerModal } from '../components/ai/SymptomCheckerModal';
 import {
   Cross, Calendar, ShieldAlert, Syringe, Activity,
@@ -354,7 +355,7 @@ export const Home = () => {
     : galleryItems.filter(item => item.category === galleryFilter);
 
   const downloadPdfSchedule = () => {
-    alert("Downloading official MOH Buttala Weekly Clinic Schedule (PDF)...");
+    generateClinicSchedulePDF(clinicSchedule);
   };
 
   const handleSmsSubmit = (e) => {

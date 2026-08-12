@@ -3,7 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { seedClinics, seedDoctors } from '../data/mohSeedData.js';
 import { QRCodeSVG } from 'qrcode.react';
 import confetti from 'canvas-confetti';
-import jsPDF from 'jspdf';
+import { generateAppointmentPDF } from '../utils/pdfGenerator';
 import { 
   Calendar, CheckCircle2, Clock, User, Phone, Mail, FileText, 
   Download, Printer, ArrowRight, ArrowLeft, ShieldCheck, Cross, MapPin, Search, UserPlus, Sparkles, AlertCircle
@@ -137,24 +137,7 @@ export const Appointments = () => {
   const handleDownloadPDF = (apt) => {
     const target = apt || bookingResult;
     if (!target) return;
-    const doc = new jsPDF();
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(18);
-    doc.text("MINISTRY OF HEALTH SRI LANKA", 20, 20);
-    doc.setFontSize(14);
-    doc.text("OFFICIAL CLINIC APPOINTMENT TICKET", 20, 30);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    doc.text(`Reference No: ${target.referenceNumber || target.id}`, 20, 45);
-    doc.text(`Patient Name: ${target.citizenName}`, 20, 55);
-    doc.text(`NIC / Passport: ${target.nic}`, 20, 65);
-    doc.text(`MOH Clinic: ${target.clinicName}`, 20, 75);
-    doc.text(`Consultant: ${target.doctorName}`, 20, 85);
-    doc.text(`Category: ${target.serviceCategory}`, 20, 95);
-    doc.text(`Date & Time: ${target.appointmentDate} @ ${target.appointmentTime}`, 20, 105);
-    doc.text(`Status: ${target.status}`, 20, 115);
-    doc.text("Present this QR pass at the clinic entrance triage counter.", 20, 130);
-    doc.save(`MOH_Appointment_${target.referenceNumber || target.id}.pdf`);
+    generateAppointmentPDF(target);
   };
 
   return (

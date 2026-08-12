@@ -1,5 +1,6 @@
 import React from 'react';
 import { Download, FileText, CheckCircle2, Shield } from 'lucide-react';
+import { generateFormDocumentPDF } from '../utils/pdfGenerator';
 
 export const Downloads = () => {
   const files = [
@@ -37,11 +38,11 @@ export const Downloads = () => {
             </div>
 
             <button
-              onClick={() => alert(`Downloading ${f.title}...`)}
+              onClick={() => generateFormDocumentPDF(f)}
               className="mt-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-md"
             >
               <Download className="w-4 h-4" />
-              <span>Download File</span>
+              <span>Download Official PDF</span>
             </button>
           </div>
         ))}
